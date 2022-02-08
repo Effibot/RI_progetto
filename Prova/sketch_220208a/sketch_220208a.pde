@@ -4,10 +4,23 @@ float cameraZ = (height/2.0) / tan(fov/2.0);
 float theta = 0;
 float gamma = 0;
 float beta = 0;
+PShape s;
+float x,y,z = 0;
+float thetaRef = 0;
+float xx=0;
+float zz=0;
+float dx=1;
+float dy=1;
+float dz=1;
+float xref=0.5;
+float zref=0.5;
+float TT=0.01;
 void setup(){
   size(800, 800, P3D);
 background(0,0,0);
-noFill();}
+noFill();
+s = loadShape("cubo v1.obj");
+}
 void draw(){
   background(0,0,0);
 
@@ -67,7 +80,22 @@ stroke(255, 0, 0);
     popMatrix();
     /////////
   popMatrix();
+  //pushMatrix();
+  shape(s,0,0);
+  //popMatrix();
 
+    xx=xx-TT*(xx-xref);
+
+
+    zz=zz-TT*(-zref+zz);
+
+  println("XX = " + xx + "\tZZ = " + zz);
+  pushMatrix();
+  if (abs(xx-xref) < 0.1 && abs(zz-zref) < 0.1){
+  }
+  s.translate(xx,0,zz);
+  popMatrix();
+  s.rotateY(theta);
 //popMatrix();
 }
 void keyPressed() {
@@ -80,5 +108,14 @@ void keyPressed() {
     }  
     if (keyCode == 'C'){
         gamma = gamma + 5* PI / (180*5);
-    }  
+    } 
+    if (keyCode == 'X') {
+      x = x + 10;
+    }
+    if (keyCode == 'Y') {
+      y = y + 10;
+    }
+    if (keyCode == 'Z') {
+      z = z + 10;
+    }
 }
