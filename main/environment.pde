@@ -1,5 +1,5 @@
 /*Global camera settings*/
-float fov = PI / 4.0;
+float fov = PI / 5.0;
 float cameraZ = (height / 2.0) / tan(fov / 2.0);
 /*Global room settings*/
 float floorWidth = 400;

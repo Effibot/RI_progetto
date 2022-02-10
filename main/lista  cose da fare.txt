@@ -1,0 +1,11 @@
+1. definire robot
+2. modello
+3. visione
+4. rover
+5. modello rover
+6. legge di controllo
+7. mappa
+8. pianificazione moto
+9. texture varie
+10. grafici vari per hud
+11. socket processing-matlab
