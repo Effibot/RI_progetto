@@ -6,7 +6,7 @@ float gamma = 0;
 float beta = 0;
 PShape s;
 float x,y,z = 0;
-float thetaRef = 0;
+float thetaRef = 0.5;
 float xx=0;
 float zz=0;
 float dx=1;
@@ -51,7 +51,7 @@ rotateX(theta);
 rotateZ(gamma);*/
 ///////
 rotateY(beta);
-stroke(255, 0, 0);
+    stroke(255, 0, 0);
     line(0, 0, 0, 100, 0, 0);    
     text("X",100,10,0);
     stroke(0, 255, 0);
@@ -80,22 +80,28 @@ stroke(255, 0, 0);
     popMatrix();
     /////////
   popMatrix();
-  //pushMatrix();
+  pushMatrix();
+  translate(0,-50,0);
   shape(s,0,0);
-  //popMatrix();
+  popMatrix();
 
     xx=xx-TT*(xx-xref);
 
 
     zz=zz-TT*(-zref+zz);
 
-  println("XX = " + xx + "\tZZ = " + zz);
+  //println("XX = " + xx + "\tZZ = " + zz);
   pushMatrix();
-  if (abs(xx-xref) < 0.1 && abs(zz-zref) < 0.1){
+  if (abs(xx-xref) > 0.1 && abs(zz-zref) > 0.1){
+      s.translate(xx,0,zz);
   }
-  s.translate(xx,0,zz);
+  theta = theta -TT*(theta-thetaRef);
+  println(theta);
+  if (abs(theta-thetaRef) > 0.1){
+    s.rotateY(theta);
+  }
   popMatrix();
-  s.rotateY(theta);
+  //s.rotateY(theta);
 //popMatrix();
 }
 void keyPressed() {
