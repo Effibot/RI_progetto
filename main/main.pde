@@ -1,5 +1,5 @@
 /*Global variables for window configuration*/
-PShape s1,s2;
+PShape s1,s2,s3,s4,s5,s6;
 int viewWidth = 1000; 
 int viewHeight = 1000;
 color bgColor = color(0,0,0);
@@ -22,6 +22,8 @@ void setup() {
     s1.scale(0.2);
     s2 = loadShape("models/Link5.obj");
     s2.scale(0.2);
+    s3=loadShape("models/Link0.obj");
+    s3.scale(0.2);
 }
 
 void draw() {
@@ -37,8 +39,9 @@ void draw() {
     fill(166);
     rotateY(gamma);
     rotateX(alpha);
-    //rotateZ(beta);
-    shape(s1);
+    rotateZ(beta);
+    //shape(s1);
+    shape(s3);
     /*pushMatrix();
         translate(0,18.5,0);
     rotateZ(beta);
