@@ -24,5 +24,4 @@ void draw() {
     /*Initialize the world*/
     room();
     show_axes(true);
-    
 }
