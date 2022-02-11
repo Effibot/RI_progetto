@@ -22,8 +22,10 @@ void setup() {
     s1.scale(0.2);
     s2 = loadShape("models/Link5.obj");
     s2.scale(0.2);
-    s3=loadShape("models/Link0.obj");
+    s3=loadShape("models/Link1.obj");
     s3.scale(0.2);
+    s4=loadShape("models/rover.obj");
+    s4.scale(0.2);
 }
 
 void draw() {
@@ -41,7 +43,7 @@ void draw() {
     rotateX(alpha);
     rotateZ(beta);
     //shape(s1);
-    shape(s3);
+    shape(s4);
     /*pushMatrix();
         translate(0,18.5,0);
     rotateZ(beta);
