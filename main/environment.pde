@@ -1,11 +1,14 @@
 /*Global camera settings*/
-float fov = PI / 5.0;
+float fov = PI / 8.0;
 float cameraZ = (height / 2.0) / tan(fov / 2.0);
 /*Global room settings*/
 float floorWidth = 400;
 float floorHeight = 400;
 float floorDepth = 5;
-
+float angoloX=0;
+float angoloY=0;
+float angoloXp=0;
+float angoloYp=0;
 
 void camera_setup() {
     perspective(fov, float(width) / float(height),cameraZ / 10.0, cameraZ * 10.0);
@@ -13,6 +16,10 @@ void camera_setup() {
     translate(width / 2, height / 2, 0);
     rotateX(PI);
     rotateY(3 * PI / 4);
+    directionalLight(126, 126, 126, 0, 0, -1);
+    ambientLight(102, 102, 102);
+  rotateY(-angoloY);
+//rotateX(angoloX);
 }
 
 /*Simple functions to render axis on the screen*/
@@ -49,4 +56,15 @@ void room() {
     box(floorDepth, floorHeight, floorWidth - floorDepth);
     popMatrix();
     popMatrix();
+}
+void mousePressed() {
+angoloYp=angoloY+PI*mouseX/10000.0;
+angoloXp=angoloX+PI*mouseY/10000.0;
+}
+
+
+
+void mouseDragged() {
+angoloY=angoloY+PI*mouseX/10000.0;
+angoloX=angoloX+PI*mouseY/10000.0;
 }

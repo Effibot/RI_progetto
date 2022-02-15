@@ -3,7 +3,7 @@ PShape s1,s2,s3,s4,s5,s6;
 int viewWidth = 1000; 
 int viewHeight = 1000;
 color bgColor = color(0,0,0);
-
+Robot robot;
 
 float alpha =0;
 float beta =0;
@@ -17,15 +17,18 @@ void settings() {
 void setup() {
     background(bgColor);
     noFill();
+
     /*Shapes loading*/
-    s1 = loadShape("models/Link4.obj");
+    /*s1 = loadShape("models/Link4.obj");
     s1.scale(0.2);
     s2 = loadShape("models/Link5.obj");
     s2.scale(0.2);
     s3=loadShape("models/Link1.obj");
     s3.scale(0.2);
     s4=loadShape("models/rover.obj");
-    s4.scale(0.2);
+    s4.scale(0.2);*/
+    robot = new Robot();
+    //s5 = robot.loadShape("rover.obj");
 }
 
 void draw() {
@@ -39,11 +42,11 @@ void draw() {
     show_axes(true);
 
     fill(166);
-    rotateY(gamma);
+    /*rotateY(gamma);
     rotateX(alpha);
-    rotateZ(beta);
+    rotateZ(beta);*/
     //shape(s1);
-    shape(s4);
+    //shape(s4);
     /*pushMatrix();
         translate(0,18.5,0);
     rotateZ(beta);
@@ -53,7 +56,14 @@ void draw() {
     shape(s2);
     //translate(0,-18.5,0);
     popMatrix();*/
+    //shape(robot.link.get(0));
+   robot.drawLink(robot);
+    
 }
+
+
+float theta1 = 0;
+float theta2 = 0;
 void keyPressed() {
     if (keyCode == 'A'){
         alpha +=1;
@@ -64,4 +74,11 @@ void keyPressed() {
     if (keyCode == 'C'){
         gamma +=1;
     }
+    if (keyCode == '1') {
+        theta1 += 0.1;
+    }
+    if (keyCode == '2') {
+        theta2 += 0.1;
+    }
 }
+
