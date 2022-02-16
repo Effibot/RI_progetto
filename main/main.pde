@@ -5,80 +5,109 @@ int viewHeight = 1000;
 color bgColor = color(0,0,0);
 Robot robot;
 
-float alpha =0;
-float beta =0;
-float gamma =0;
+float alpha = 0;
+float beta = 0;
+float gamma = 0;
 
 void settings() {
-    /*Sketch view setup*/
-    size(viewWidth, viewHeight, P3D);
+/*Sketch view setup*/
+size(viewWidth, viewHeight, P3D);
 }
 
 void setup() {
-    background(bgColor);
-    noFill();
+background(bgColor);
+noFill();
 
-    /*Shapes loading*/
-    /*s1 = loadShape("models/Link4.obj");
-    s1.scale(0.2);
-    s2 = loadShape("models/Link5.obj");
-    s2.scale(0.2);
-    s3=loadShape("models/Link1.obj");
-    s3.scale(0.2);
-    s4=loadShape("models/rover.obj");
-    s4.scale(0.2);*/
-    robot = new Robot();
-    //s5 = robot.loadShape("rover.obj");
+/*Shapes loading*/
+/*s1 = loadShape("models/Link4.obj");
+s1.scale(0.2);
+s2 = loadShape("models/Link5.obj");
+s2.scale(0.2);
+s3=loadShape("models/Link1.obj");
+s3.scale(0.2);
+s4=loadShape("models/rover.obj");
+s4.scale(0.2);*/
+robot = new Robot();
+//s5 = robot.loadShape("rover.obj");
 }
 
 void draw() {
-    /*Background init*/
-    background(bgColor);
-    /*Loading Camera settings*/
-    camera_setup();
-    /*Initialize the world*/
-           //rotateY(PI/4);
- room();
-    show_axes(true);
+/*Background init*/
+background(bgColor);
+/*Loading Camera settings*/
+camera_setup();
+/*Initialize the world*/
+//rotateY(PI/4);
+room();
+//show_axes(false);
 
-    fill(166);
-    /*rotateY(gamma);
-    rotateX(alpha);
-    rotateZ(beta);*/
-    //shape(s1);
-    //shape(s4);
-    /*pushMatrix();
-        translate(0,18.5,0);
-    rotateZ(beta);
-    translate(0,42.5-18.5,0);
-    //pushMatrix();
-    //rotateZ(beta);
-    shape(s2);
-    //translate(0,-18.5,0);
-    popMatrix();*/
-    //shape(robot.link.get(0));
-   robot.drawLink(robot);
-    
+fill(166);
+/*rotateY(gamma);
+rotateX(alpha);
+rotateZ(beta);*/
+//shape(s1);
+//shape(s4);
+/*pushMatrix();
+translate(0,18.5,0);
+rotateZ(beta);
+translate(0,42.5-18.5,0);
+//pushMatrix();
+//rotateZ(beta);
+shape(s2);
+//translate(0,-18.5,0);
+popMatrix();*/
+//shape(robot.link.get(0));
+robot.drawLink(robot);
+
 }
 
 
 float theta1 = 0;
 float theta2 = 0;
+float theta3 = 0;
+float theta4 = 0;
+float theta5 = 0;
+float theta6 = 0;
+float x = 0;
 void keyPressed() {
-    if (keyCode == 'A'){
-        alpha +=1;
-    }
-    if (keyCode == 'B'){
-        beta +=1;
-    }
-    if (keyCode == 'C'){
-        gamma +=1;
-    }
-    if (keyCode == '1') {
-        theta1 += 0.1;
-    }
-    if (keyCode == '2') {
-        theta2 += 0.1;
-    }
+if (keyCode == 'A') {
+    alpha += 1;
+}
+if (keyCode == 'B') {
+    beta += 1;
+}
+if (keyCode == 'C') {
+    gamma += 1;
+}
+if (keyCode == '1') {
+    theta1 += 0.1;
+}
+if (keyCode == '2') {
+    theta2 += 0.1;
+}
+if (keyCode == '3') {
+    theta3 += 0.1;
+}
+if (keyCode == '4') {
+    theta4 += 0.1;
+}
+if (keyCode == '5') {
+    theta5 += 0.1;
+}
+if (keyCode == '6') {
+    theta6 += 0.1;
+}
+if (keyCode == 'X') {
+    x = x+1;
+}
+if (keyCode == 'R'){
+    theta1 = 0;
+    theta2 = 0;
+    theta3 = 0;
+    theta4 = 0;
+    theta5 = 0;
+    theta6 = 0;
+    x = 0;
+}
 }
 
