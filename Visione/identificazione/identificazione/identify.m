@@ -12,7 +12,7 @@ syms x diag1(x) diag2(x)
 % Calcolatrice Verticale con luce diffusa -> Non Identificata
 % filename = 'images/verticalCalc.jpg';
 % Calcolatrice in Diagonale con sfondo bianco -> Identificata
-% filename = 'images/rotateCalcW.jpg';            
+% filename = 'Immagini/rotateCalcW.jpg';            
 % Calcolatrice Orizzontale con Ombra -> Identificata con pxToDel = 40000
 filename = 'Immagini/horizontalCalcShadow.jpg';     
 % Calcolatrice Orizzontale sfondo bianco -> Identificata
@@ -22,7 +22,7 @@ filename = 'Immagini/horizontalCalcShadow.jpg';
 % Rondella Circolare -> Identificata
 % filename = 'images/rondella.jpg';
 % Mensola Triangolare -> Identificata
-%filename = 'Immagini/triangolo.jpg';
+% filename = 'Immagini/triangolo.jpg';
 % Dado Esagonale  -> Identificato
 % filename = 'images/dadoEsagono.jpg';
 % Controller  -> Bordi troppo diversi da loro, non identificata.
@@ -80,7 +80,7 @@ imgBW2 = bwareaopen(imgBW,pxToDel);
 
 mask=strel('disk',10,8);
 %imgBW3=imdilate(imgBW2,mask);
-mask1=strel('square',5);
+mask1=strel('square',10);
 
 % imclose() applica operatori morfologici su immagini in b/n  o greyscale
 imgBW3 = imclose(imgBW2, mask);   
@@ -142,7 +142,7 @@ end
 theta = 0:179;
 % Eseguo le proiezioni.
 % R è la trasformata, Xp l'angolo in radianti relativo alla trasformata.
-[R1, xp1] = radon(imgBW4,  [0,30,45,60,90,120,135,150,175,180]);
+[R1, xp1] = radon(imgBW4,  theta);
 
 % Determino la proiezione con altezza maggiore per determinare la diagonale
 maxRadon = max(R1);
@@ -157,19 +157,32 @@ maxRadon = max(R1);
 
 % Trovo angolo in radianti il cui indice corrisponde all'elemento di una
 % delle colonne di R il cui valore è pari al picco individuato da pk
-theta1 = locs(1);
+ theta1 = locs(1);
 offset1 = xp1(R1(:, locs(1)) == pk(1));
-theta2 = locs(2);
+ theta2 = locs(2);
 offset2 = xp1(R1(:, locs(2)) == pk(2));
 
 % Determino le diagonali 
-diag1(x) = tand(theta1+90) * (x - offset1*cosd(theta1)) + offset1*sind(theta1);
-diag2(x) = tand(theta2+90) * (x - offset2*cosd(theta2)) + offset2*sind(theta2);
-
+% diag1(x) = tand(theta1+90) * (x -(x_00+center(1))) +(y_00+center(2));
+% diag2(x) = tand(theta2+90) * (x -(x_01+center(1))) +(y_01+center(2))
+% diag1(x) = tand(theta1+90) * (x - offset1*cosd(theta1)) + offset1*sind(theta1);
+% diag2(x) = tand(theta2+90) * (x - offset2*cosd(theta2)) + offset2*sind(theta2);
+% diag1(x) = tand(theta1+90) * (x - cosd(theta1)) + sind(theta1);
+% diag2(x) = tand(theta2+90) * (x - cosd(theta2)) + sind(theta2);
 % Identifico il baricentro nel punto d'intersezione delle diagonali
-x_bc = solve(diag1 == diag2);
-y_bc = diag1(x_bc);
-
+% if(objShape=="Triangolo" )
+%     coords=regionprops(imgBW4,{'Centroid'});
+%     x_bc=coords.Centroid(1);
+%     y_bc=coords.Centroid(2);
+% else
+% x_bc = solve(diag1 == diag2);
+% y_bc = diag1(x_bc);
+% end
+diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
+diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2); 
+ coords=regionprops(imgBW4,{'Centroid'});
+    x_bc=coords.Centroid(1);
+    y_bc=coords.Centroid(2);
 % Determino Orientamento a partire da due angoli identificati dalla
 % trasformata di Radon
 
@@ -259,11 +272,12 @@ title(t9,'130°','Color','#4DBEEE')
 t10=nexttile;
 plot(xp1,R1(:,10));
 title(t10,'147°','Color','#D95319')
-%plot(xp1,R1(:,11));
-% title(t11,'163°','Color','#EDB120')
-% t12=nexttile;
-% % plot(xp1,R1(:,12));
-% title(t12,'180°','Color','#7E2F8E')
+plot(xp1,R1(:,11));
+t11=nexttile;
+title(t11,'163°','Color','#EDB120')
+t12=nexttile;
+plot(xp1,R1(:,12));
+title(t12,'180°','Color','#7E2F8E')
 
 %% Grafico delle Diagonali
 figure
@@ -279,12 +293,18 @@ end
 plot(boundary(:,2), boundary(:,1), 'b', 'LineWidth', 2);
 title('Identificazione Oggetto');
 hold on
-plot(center(1) + offset1*cosd(theta1), center(2) - offset1*sind(theta1), 'r*', 'MarkerSize', 10);
-plot(center(1) + offset2*cosd(theta2), center(2) - offset2*sind(theta2), 'g*', 'MarkerSize', 10);
-plot(center(1) + x_bc, center(2) - y_bc, 'bo', 'MarkerSize', 10);
-diag1Plot = center(2) - tand(theta1+90) * (x - center(1) - offset1*cosd(theta1)) - offset1*sind(theta1);
-diag2Plot = center(2) - tand(theta2+90) * (x - center(1) - offset2*cosd(theta2)) - offset2*sind(theta2);
-lineOrient = center(2) - tand(orient) * (x - center(1) - x_bc) - y_bc;
+
+plot(cosd(theta1),sind(theta1), 'r*', 'MarkerSize', 10);
+plot(cosd(theta2),sind(theta2), 'g*', 'MarkerSize', 10);
+plot(x_bc, y_bc, 'bo', 'MarkerSize', 10);
+% diagPlot = imgCenterY-alpha*(xCoord-imgCenterX-Xtocross)-YtoCross
+% nella definizione delle diagonali (imgCenterX,imgCenterY) non sono state
+% considerate dato che le coordinate sono già traslate
+diag1Plot =  center(2) - tand(theta1 + 90) * ( x - center(1) - offset1*cosd(theta1) ) - offset1*sind(theta1);
+diag2Plot = center(2) - tand(theta2 + 90) * ( x - center(1) - offset2*cosd(theta2) ) - offset2*sind(theta2);
+
+lineOrient = - tand(orient+90) * (x  - x_bc) + y_bc;
+
 fplot(diag1Plot, 'r', 'LineWidth', 1.5);
 fplot(diag2Plot, 'g', 'LineWidth', 1.5);
 fplot(lineOrient, 'y', 'LineWidth', 2);
