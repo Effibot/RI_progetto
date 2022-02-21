@@ -8,25 +8,29 @@ clearvars
 close all
 clc
 syms x diag1(x) diag2(x)
+syms rect(x,x0,y0,x1,y1)
+rect(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
+
 %% Lettura Immagini e caricamento in workspace
 % Calcolatrice Verticale con luce diffusa -> Non Identificata
 % filename = 'images/verticalCalc.jpg';
 % Calcolatrice in Diagonale con sfondo bianco -> Identificata
-% filename = 'Immagini/rotateCalcW.jpg';            
+% filename = 'Immagini/rotateCalcW.jpg';
 % Calcolatrice Orizzontale con Ombra -> Identificata con pxToDel = 40000
-filename = 'Immagini/horizontalCalcShadow.jpg';     
+% filename = 'Immagini/horizontalCalcShadow.jpg';
 % Calcolatrice Orizzontale sfondo bianco -> Identificata
-% filename = 'images/horizontalCalcW.jpg'; 
+% filename = 'images/horizontalCalcW.jpg';
 % Calcolatrice Orizzontale sfondo nero -> Identificata
-% filename = 'images/horizontalCalcB.jpg';     
+% filename = 'images/horizontalCalcB.jpg';
 % Rondella Circolare -> Identificata
-% filename = 'images/rondella.jpg';
+% filename = 'Immagini/rondella.jpg';
 % Mensola Triangolare -> Identificata
-% filename = 'Immagini/triangolo.jpg';
+filename = 'Immagini/triangolo.jpg';
 % Dado Esagonale  -> Identificato
 % filename = 'images/dadoEsagono.jpg';
 % Controller  -> Bordi troppo diversi da loro, non identificata.
-% filename = 'images/controller.jpg';
+% filename = 'Immagini/controller.jpg';
+% filename = 'Immagini/QuadratoRosso.jpg';
 imgRGB = imread(filename);  % Caricamente Immagine
 
 %% Pre-Processamento: Compressione dell'immagine
@@ -69,7 +73,7 @@ if(nPixelW >= res/2)
     imgBW = imcomplement(imgBW);
 end
 
-%% Elimino difetti nell'immagine 
+%% Elimino difetti nell'immagine
 % utile per eliminare artefatti grafici (es: ombre)
 % pxToDel = 40;        % Soglia di pixel da considerare come rumore.
 pxToDel = 40000;      % Soglia per Ombra
@@ -83,8 +87,8 @@ mask=strel('disk',10,8);
 mask1=strel('square',10);
 
 % imclose() applica operatori morfologici su immagini in b/n  o greyscale
-imgBW3 = imclose(imgBW2, mask);   
-imgBW3 = imopen(imgBW3, mask1);   
+imgBW3 = imclose(imgBW2, mask);
+imgBW3 = imopen(imgBW3, mask1);
 
 %% Eliminazione "buchi" dall'immagine
 % permette di eliminare artefatti grafici simili a riflessi sulla
@@ -100,7 +104,7 @@ imgBW4 = imfill(imgBW3, 'holes');
 % regionprops() calcola il valore effettivo di perimetro ed area.
 % Salvo il risultato in un oggetto.
 props = regionprops(L, 'Area', 'Perimeter');
-% Salvo Area e Perimetro di tutti gli oggetti identificati come lista. 
+% Salvo Area e Perimetro di tutti gli oggetti identificati come lista.
 areas = [props.Area];
 perims = [props.Perimeter];
 % Discrimino l'oggetto da identificare da tutti quelli nell'immagine
@@ -116,10 +120,10 @@ polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
 for i=1:4
     numLati = i+2;
     if(apothem/objPerim*numLati < fixed(i)+epsilon)
-      if(apothem/objPerim*numLati > fixed(i)-epsilon)
-        objShape = polig(i);
-        break;
-      end
+        if(apothem/objPerim*numLati > fixed(i)-epsilon)
+            objShape = polig(i);
+            break;
+        end
     end
 end
 % Stesso discorso dei poligoni regolari, ma su una circonferenza
@@ -150,51 +154,71 @@ maxRadon = max(R1);
 %% Determino il massimo per identificare il punto più alto della
 % proiezione con altezza maggiore.
 % [pk, locs] = findpeaks() identifica il massimo locale del vettore dato in
-% ingresso e l'indice di quel valore all'interno del vettore. 
+% ingresso e l'indice di quel valore all'interno del vettore.
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
-[pk, locs] = findpeaks(maxRadon, 'SortStr', 'descend', 'NPeaks', 2);
+[pk, locs] = findpeaks(maxRadon, 'SortStr', 'descend', 'NPeaks', 3);
 
 % Trovo angolo in radianti il cui indice corrisponde all'elemento di una
 % delle colonne di R il cui valore è pari al picco individuato da pk
- theta1 = locs(1);
+theta1 = locs(1);
 offset1 = xp1(R1(:, locs(1)) == pk(1));
- theta2 = locs(2);
+theta2 = locs(2);
 offset2 = xp1(R1(:, locs(2)) == pk(2));
 
-% Determino le diagonali 
-% diag1(x) = tand(theta1+90) * (x -(x_00+center(1))) +(y_00+center(2));
-% diag2(x) = tand(theta2+90) * (x -(x_01+center(1))) +(y_01+center(2))
-% diag1(x) = tand(theta1+90) * (x - offset1*cosd(theta1)) + offset1*sind(theta1);
-% diag2(x) = tand(theta2+90) * (x - offset2*cosd(theta2)) + offset2*sind(theta2);
-% diag1(x) = tand(theta1+90) * (x - cosd(theta1)) + sind(theta1);
-% diag2(x) = tand(theta2+90) * (x - cosd(theta2)) + sind(theta2);
-% Identifico il baricentro nel punto d'intersezione delle diagonali
-% if(objShape=="Triangolo" )
-%     coords=regionprops(imgBW4,{'Centroid'});
+% Determino le diagonali
+if (objShape=="Triangolo")
+    theta3 = locs(3);
+    offset3 = xp1(R1(:, locs(3)) == pk(3));
+    diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
+    diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2);
+    diag3(x) = tand(theta3 + 90) * ( x - offset3*cosd(theta3) ) + offset3*sind(theta3);
+    
+    % trovo vertici del triangolo
+    x_1 = solve(diag1 == diag2);    % rossa con verde
+    y_1 = diag1(x_1);
+    x_2 = solve(diag2 == diag3);    % ciano con verde
+    y_2 = diag2(x_2);
+    x_3 = solve(diag1 == diag3);    % rossa con ciano
+    y_3 = diag1(x_3);
+    % trovo punti medi
+    xm1 = (x_1+x_3)/2;  % rosso
+    ym1 =  (y_1+y_3)/2;
+    xm2 =(x_1+x_2)/2;   % verde
+    ym2 = (y_1+y_2)/2;
+    xm3 =(x_2+x_3)/2;   % ciano
+    ym3 =(y_2+y_3)/2;
+    % retta per due punti
+    rect1 = rect(x,x_1,y_1,xm3,ym3);    % mediano rossa-ciano
+    rect2 = rect(x,x_2,y_2,xm1,ym1);    % mediano verde-rosso
+    rect3 = rect(x,x_3,y_3,xm2,ym2);    % mediano ciano-verde
+    
+    % baricentro
+    x_bc = solve( rect1 == rect2 );
+    y_bc = subs(rect3,x,x_bc);
+    
+    
+else
+    diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
+    diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2);
+    x_bc = solve( diag1 == diag2 );
+    y_bc = diag1(x_bc);
+end
+% coords=regionprops(imgBW4,{'Centroid','Orientation'});
 %     x_bc=coords.Centroid(1);
 %     y_bc=coords.Centroid(2);
-% else
-% x_bc = solve(diag1 == diag2);
-% y_bc = diag1(x_bc);
-% end
-diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
-diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2); 
- coords=regionprops(imgBW4,{'Centroid'});
-    x_bc=coords.Centroid(1);
-    y_bc=coords.Centroid(2);
 % Determino Orientamento a partire da due angoli identificati dalla
 % trasformata di Radon
 
 orient = (theta1+theta2)/2;
 % Controllo se c'è discordanza tra i quadranti identificati dagli angoli
-if(sign(sind(theta1)) ~= sign(sind(theta2)) || sign(cosd(theta1)) ~= sign(cosd(theta2)) ) 
+if(sign(sind(theta1)) ~= sign(sind(theta2)) || sign(cosd(theta1)) ~= sign(cosd(theta2)) )
     orient = orient-90;
 end
 % Mi assicuro che l'angolo trovato sia tra -90° and 90°
 orient = atand(sind(orient)/cosd(orient));
 %% Fine Processamento
-elapseTime = toc; 
+elapseTime = toc;
 %% Visualizzo Immagine a Colori
 % figure
 % imshow(imgRGB)
@@ -296,18 +320,33 @@ hold on
 
 plot(cosd(theta1),sind(theta1), 'r*', 'MarkerSize', 10);
 plot(cosd(theta2),sind(theta2), 'g*', 'MarkerSize', 10);
-plot(x_bc, y_bc, 'bo', 'MarkerSize', 10);
+% plot(x_bc, y_bc, 'bo', 'MarkerSize', 10);
+plot(center(1) + x_bc, center(2) - y_bc, 'bo', 'MarkerSize', 10);
+
 % diagPlot = imgCenterY-alpha*(xCoord-imgCenterX-Xtocross)-YtoCross
 % nella definizione delle diagonali (imgCenterX,imgCenterY) non sono state
 % considerate dato che le coordinate sono già traslate
 diag1Plot =  center(2) - tand(theta1 + 90) * ( x - center(1) - offset1*cosd(theta1) ) - offset1*sind(theta1);
 diag2Plot = center(2) - tand(theta2 + 90) * ( x - center(1) - offset2*cosd(theta2) ) - offset2*sind(theta2);
-
-lineOrient = - tand(orient+90) * (x  - x_bc) + y_bc;
+if (objShape=="Triangolo")
+    diag3Plot = center(2) - tand(theta3 + 90) * ( x - center(1) - offset3*cosd(theta3) ) - offset3*sind(theta3);
+    fplot(diag3Plot, 'c', 'LineWidth', 1.5);
+end
+% lineOrient = - tand(orient) * (x  - x_bc) + y_bc;
+lineOrient = center(2) - tand(orient) * ( x - center(1) - x_bc ) - y_bc;
 
 fplot(diag1Plot, 'r', 'LineWidth', 1.5);
 fplot(diag2Plot, 'g', 'LineWidth', 1.5);
 fplot(lineOrient, 'y', 'LineWidth', 2);
+rect1=-subs(rect1,x,x-center(1)) + center(2);
+rect2=-subs(rect2,x,x-center(1)) + center(2);
+rect3=-subs(rect3,x,x-center(1)) + center(2);
+plot(center(1)+x_1,center(2)-y_1,'bo','MarkerSize',10)
+
+fplot(rect1, 'r', 'LineWidth', 1.5);
+
+fplot(rect2, 'r', 'LineWidth', 1.5);
+fplot(rect3, 'r', 'LineWidth',1.5);
 
 %% Report dell'Identificazione
 fprintf("Area: %f, Perimetro: %f\n", objArea, objPerim);
