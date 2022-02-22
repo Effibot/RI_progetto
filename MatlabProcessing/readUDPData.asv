@@ -1,0 +1,7 @@
+function readUDPData(src,~)
+            src.UserData = src.UserData + 1;
+            disp("Callback Call Count: " + num2str(src.UserData));
+            data = read(src,src.NumDatagramsAvailable,"string");
+            disp(data);
+            %Ricezione dei dati ora è possibile manipolarli
+        end
