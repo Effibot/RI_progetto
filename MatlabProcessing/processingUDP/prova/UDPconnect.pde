@@ -32,14 +32,13 @@ public static class UDPconnect{
     String str="[";
     for (int i=0; i<size;i++){
       if (i==size-1){
-        str=str+"]";
+        str=str+toSend[i]+"]";
       }else{
       str = str+toSend[i]+",";
-    }
-    }
-     this.udpModule.send(str, this.RX_IP_Addr,this.RX_Port);
-    
-        
+      }
+    };
+    println(str);
+     this.udpModule.send(str, this.RX_IP_Addr,this.RX_Port); 
   }
 
   private void EnableLog(boolean val){
@@ -74,9 +73,10 @@ public static class UDPconnect{
     }else return("");
   }
   void receive( byte[] data ) {
-  data = subset(data, 0, data.length-2);
+  data = subset(data, 0, data.length); //<>//
   String message = new String( data );
   this.buffer = message;
+  println("this.buffer"+this.buffer);
 }
  private void closeConnection(){
    this.udpModule.close();
@@ -96,20 +96,25 @@ public static class UDPconnect{
     this.sendData(toSend);
     println("Receiving...");
     this.results=this.retrieveData();
+    while (!this.results.equals("[0.0]")){
+    }
+    println("This.result"+Arrays.toString(parse(this.results)));
     return parse(this.results);
   }
   private float[] parse(String str){
     float[] r=new float[1];
+    println("String to Parse"+str);
     if(!str.isEmpty()){
     String nobrackets = str.replaceAll("[\\p{Ps}\\p{Pe}]", "");
-    println(nobrackets);
+    println("nobrackets"+nobrackets);
     String[] strValues= nobrackets.split(",");
-    println(strValues);
+    println("no comma"+strValues);
     r = new float[strValues.length];
-    for(int i=0;i<strValues.length ;i++){
+    for(int i=0;i<strValues.length-1 ;i++){
       r[i]=Float.parseFloat(strValues[i]);
     }
     }
+    println("PARSE RES"+r);
      return r;
   }
 

@@ -20,30 +20,35 @@ void setup(){
 
 }
 void draw(){
-  
 }
 
 void keyPressed(){
   if(keyCode=='1'){
     q1=q1+1;
+    eq[1]=q1;
+    println("PreSimul"+Arrays.toString(eq));
     eq=udp.simulate(eq);
-    print(eq);
+    println("Postsimul"+Arrays.toString(eq));
 
   }
   if(keyCode=='Q'){
     q1=q1-1;
+    eq[1]=q1;
+    println("PreSimul"+Arrays.toString(eq));
     eq=udp.simulate(eq);
-  print(eq);
+    println("Postsimul"+Arrays.toString(eq));
   }
   if(keyCode=='2'){
     q2=q2+1;
+    println("PreSimul"+Arrays.toString(eq));
     eq=udp.simulate(eq);
-    print(eq);
+    println("Postsimul"+Arrays.toString(eq));
 
   }
   if(keyCode=='W'){
     q2=q2-1;
+    println("PreSimul"+Arrays.toString(eq));
     eq=udp.simulate(eq);
-    print(eq);
+    println("Postsimul"+Arrays.toString(eq));
   }
 }
