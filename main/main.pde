@@ -9,6 +9,13 @@ float alpha = 0;
 float beta = 0;
 float gamma = 0;
 
+float q1 = 0;
+float q2 = 0;
+float q3 = 0;
+float q4 = 0;
+float q5 = 0;
+float q6 = 0;
+float x = 0;
 void settings() {
 /*Sketch view setup*/
 size(viewWidth, viewHeight, P3D);
@@ -57,18 +64,17 @@ shape(s2);
 //translate(0,-18.5,0);
 popMatrix();*/
 //shape(robot.link.get(0));
+show_axes(true);
 robot.drawLink(robot);
-
+applyMatrix(cos(q1),0.0,-sin(q1),0.0,
+             sin(q1),0.0,cos(q1),0.0,
+             0.0,-1.0,0.0,robot.scale(robot.roverH / 2 + robot.link1H / 2),
+             0.0,0.0,0.0,1.0);
+show_axes(true);
+     
 }
 
 
-float theta1 = 0;
-float theta2 = 0;
-float theta3 = 0;
-float theta4 = 0;
-float theta5 = 0;
-float theta6 = 0;
-float x = 0;
 void keyPressed() {
 if (keyCode == 'A') {
     alpha += 1;
@@ -80,34 +86,33 @@ if (keyCode == 'C') {
     gamma += 1;
 }
 if (keyCode == '1') {
-    theta1 += 0.1;
+    q1 += 0.1;
 }
 if (keyCode == '2') {
-    theta2 += 0.1;
+    q2 += 0.1;
 }
 if (keyCode == '3') {
-    theta3 += 0.1;
+    q3 += 0.1;
 }
 if (keyCode == '4') {
-    theta4 += 0.1;
+    q4 += 0.1;
 }
 if (keyCode == '5') {
-    theta5 += 0.1;
+    q5 += 0.1;
 }
 if (keyCode == '6') {
-    theta6 += 0.1;
+    q6 += 0.1;
 }
 if (keyCode == 'X') {
     x = x+1;
 }
 if (keyCode == 'R'){
-    theta1 = 0;
-    theta2 = 0;
-    theta3 = 0;
-    theta4 = 0;
-    theta5 = 0;
-    theta6 = 0;
+    q1 = 0;
+    q2 = 0;
+    q3 = 0;
+    q4 = 0;
+    q5 = 0;
+    q6 = 0;
     x = 0;
 }
 }
-

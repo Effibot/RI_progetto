@@ -54,7 +54,7 @@ public class Robot{
             PShape link = robot.link.get(i);
             switch(i) {
                 case 0 : // rover
-                    show_axes(true);
+                    //show_axes(false);
                     pushMatrix();
                     rotateX( -PI / 2);
                     rotateZ(PI / 2);                    
@@ -66,53 +66,53 @@ public class Robot{
                     pushMatrix();
                     translate(0,scale(roverH / 2 + link1H / 2),0);
                     fill(155);
-                    rotateY(theta1);
-                    show_axes(true);                    
+                    rotateY(q1);
+                    //show_axes(false);                    
                     shape(link);
                     break;
                 case 2 : 
                     pushMatrix();
                     translate(0,scale(link1R),0);
-                    rotateZ(theta2);
+                    rotateZ(q2);
                     link.setFill(color(255, 255,0));
                     translate(0,scale(link2B - link1R),0);
-                    show_axes(true);                    
+                    //show_axes(false);                    
                     shape(link);                    
                     break;
                 case 3:
                     pushMatrix();
                     translate(0,scale(link2H - 2 * link2R2),0);
-                    rotateZ(theta3);
+                    rotateZ(q3);
                     translate(scale(link2C2R),scale(link3C),scale(link3align));
                     link.setFill(color(0, 255, 255));
-                    show_axes(true);                    
+                    //show_axes(false);                    
                     shape(link);
                     break;
                 case 4:
                     pushMatrix();
                     translate(scale(link4BX),scale(link4BY),0);
-                    rotateX(theta4);
-                    show_axes(true);
+                    rotateX(q4);
+                    //show_axes(false);
                     link.setFill(color(160,45,90));
-                    show_axes(true);                    
+                    //show_axes(false);                    
                     shape(link);                   
                     break;
                 case 5:
                     pushMatrix();                
                     translate(scale(link4C),scale(link5BY),0);
-                    rotateZ(theta5);
-                    show_axes(true);
+                    rotateZ(q5);
+                    //show_axes(false);
                     translate(scale( -link5C),0,0);
                     link.setFill(color(100,200,255));
-                    show_axes(true);                    
+                    //show_axes(false);                    
                     shape(link);                    
                     break;
                 case 6:
                     pushMatrix();
                     translate(scale(link5BX),0,0);                    
                     rotateY(PI / 2);
-                    show_axes(true);
-                    rotateX(theta6);
+                    //show_axes(false);
+                    rotateX(q6);
                     link.setFill(color(255,200,100));
                     shape(link);
                     popMatrix();
