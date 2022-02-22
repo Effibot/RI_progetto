@@ -11,12 +11,11 @@ public class Robot{
     float roverH = 50;  // altezza rover
     float roverW = 12;  // altezza ruote rover
     float roverD = 220; // diametro rover
-    float link1H = 192; // altezza link 1
-    float link1C = 103; // distanza centro link 1 da base
+    float link1H = 185; // altezza baricentro link 1
     float link1R = 40;  // raggio cilindro link 1
     float link2B = 172; // distanza baricentro link 2 da baricentro 1
     float link2R2 = 48.43;  // raggio circonferanza alta link2
-    float link2H = 245;    // altezza centro circ 2 link 2 da 
+    float link2H = 245;    // altezza centro circ 2 link 2 da bc link 2
     float link2C2R = 35;    // raggio circ 2 link 2
     float link3C = 46;  // distanza baricentro link 3 da circ 2 link 2
     float link3align = -3;   // alignement orizzontale per link 3
@@ -54,48 +53,74 @@ public class Robot{
             PShape link = robot.link.get(i);
             switch(i) {
                 case 0 : // rover
-                    //show_axes(false);
                     pushMatrix();
-                    rotateX( -PI / 2);
-                    rotateZ(PI / 2);                    
-                    shape(link);
+                    /* R0 */
+                    //show_axes(true);   
+                    rotateZ(PI / 2);         
+                    //link.setFill(color(144,155,10));                            
+                    //shape(link);
                     popMatrix();
                     break;
                 // link i-esimo
                 case 1:
-                    pushMatrix();
-                    translate(0,scale(roverH / 2 + link1H / 2),0);
+                    pushMatrix();                    
                     fill(155);
-                    rotateY(q1);
-                    //show_axes(false);                    
-                    shape(link);
+                    /* Q_01 */
+                    rotateZ(q1);
+                    show_axes(true);
+                    translate(0,0,scale(roverH / 2 + link1H / 2+link1R));
+                    rotateX(-PI/2);
+                    
+                    /*aggiungo rotazione per disegno*/
+                    pushMatrix();
+                    translate(0,scale(-link1R),0);
+                    //shape(link);
+                    popMatrix();
                     break;
                 case 2 : 
                     pushMatrix();
-                    translate(0,scale(link1R),0);
+                    /* Tolgo rotazione estetica*/
+                    //rotateX(-PI/2);
+                    /* Q_12 */
+                    /* Traslo fino a origine R1 */                    
                     rotateZ(q2);
+                    show_axes(true);  
+                    translate(scale(link2H + link2C2R),0,0);                    
                     link.setFill(color(255, 255,0));
-                    translate(0,scale(link2B - link1R),0);
-                    //show_axes(false);                    
-                    shape(link);                    
+                    pushMatrix();
+                    /* Rotazione Estetica */                    
+                    rotateZ(-PI/2);
+                    /* Traslazione estetica */
+                    translate(0,scale(link2B - link1R - link2H - link2C2R),0);                                    
+                    //shape(link);            
+                    popMatrix();
                     break;
                 case 3:
                     pushMatrix();
-                    translate(0,scale(link2H - 2 * link2R2),0);
+                    /* Q_23*/                    
                     rotateZ(q3);
-                    translate(scale(link2C2R),scale(link3C),scale(link3align));
-                    link.setFill(color(0, 255, 255));
-                    //show_axes(false);                    
-                    shape(link);
+                    show_axes(true);          
+                    rotateX(PI/2);                    
+                    translate(scale(link3C),0,0);
+                    link.setFill(color(0, 255, 255));                              
+                    pushMatrix();
+                    translate(-scale(link2C2R/2),0,scale(link2C2R));
+                    rotateX(PI/2);
+                    //shape(link);
+                    popMatrix();
                     break;
                 case 4:
                     pushMatrix();
-                    translate(scale(link4BX),scale(link4BY),0);
-                    rotateX(q4);
-                    //show_axes(false);
-                    link.setFill(color(160,45,90));
-                    //show_axes(false);                    
-                    shape(link);                   
+                    /* Q_04 */
+                    rotateZ(q4+PI/2);
+                    show_axes(true);
+                    translate(0,0,scale(link4C));                    
+                    rotateX(-PI/2);
+                    //
+                    link.setFill(color(160,45,90));                    
+                    pushMatrix();
+                    //shape(link);
+                    popMatrix();                   
                     break;
                 case 5:
                     pushMatrix();                
@@ -105,7 +130,7 @@ public class Robot{
                     translate(scale( -link5C),0,0);
                     link.setFill(color(100,200,255));
                     //show_axes(false);                    
-                    shape(link);                    
+                    //shape(link);                    
                     break;
                 case 6:
                     pushMatrix();
@@ -114,7 +139,7 @@ public class Robot{
                     //show_axes(false);
                     rotateX(q6);
                     link.setFill(color(255,200,100));
-                    shape(link);
+                    //shape(link);
                     popMatrix();
                     popMatrix();
                     popMatrix();

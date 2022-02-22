@@ -64,18 +64,28 @@ shape(s2);
 //translate(0,-18.5,0);
 popMatrix();*/
 //shape(robot.link.get(0));
-show_axes(true);
 robot.drawLink(robot);
-applyMatrix(cos(q1),0.0,-sin(q1),0.0,
+/*applyMatrix(cos(q1),0.0,-sin(q1),0.0,
              sin(q1),0.0,cos(q1),0.0,
              0.0,-1.0,0.0,robot.scale(robot.roverH / 2 + robot.link1H / 2),
-             0.0,0.0,0.0,1.0);
-show_axes(true);
+             0.0,0.0,0.0,1.0);*/
      
 }
 
 
 void keyPressed() {
+    if (keyCode == LEFT){
+        angoloY -= radians(5);
+    }
+        if (keyCode == RIGHT){
+        angoloY += radians(5);
+    }
+    if (keyCode == DOWN){
+        angoloX -= radians(5);
+    }
+        if (keyCode == UP){
+        angoloX += radians(5);
+    }
 if (keyCode == 'A') {
     alpha += 1;
 }
@@ -86,22 +96,22 @@ if (keyCode == 'C') {
     gamma += 1;
 }
 if (keyCode == '1') {
-    q1 += 0.1;
+    q1 += radians(2);
 }
 if (keyCode == '2') {
-    q2 += 0.1;
+    q2 += radians(2);
 }
 if (keyCode == '3') {
-    q3 += 0.1;
+    q3 += radians(2);
 }
 if (keyCode == '4') {
-    q4 += 0.1;
+    q4 += radians(2);
 }
 if (keyCode == '5') {
-    q5 += 0.1;
+    q5 += radians(2);
 }
 if (keyCode == '6') {
-    q6 += 0.1;
+    q6 += radians(2);
 }
 if (keyCode == 'X') {
     x = x+1;
