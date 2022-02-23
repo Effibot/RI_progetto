@@ -20,7 +20,7 @@ classdef UDPMatlab <handle
             return
         end
         function obj= InitializeConnection(obj)
-            obj.UDP=udpport("datagram","LocalHost",obj.IP_Addr,"LocalPort",obj.Port_TX,"EnablePortSharing",true,'OutputDatagramSize',65507);
+            obj.UDP=udpport("datagram","LocalHost",obj.IP_Addr,"LocalPort",obj.Port_TX,"EnablePortSharing",true,"OutputDatagramSize",64);
             configureCallback(obj.UDP,"datagram",1,@readUDPData);
             return
         end
