@@ -23,19 +23,25 @@ void camera_setup() {
 }
 
 /*Simple functions to render axis on the screen*/
+        float opacity = 255;
+
 void show_axes(boolean b) {
-    float opacity = b ? 255 : 0;
+    //float opacity = b ? 255 : 0;
+    if (b) {
     stroke(255, 0, 0, opacity);
-    line(0, 0, 0, 100, 0, 0);    
-    text("X", 100, 10,0);
+    line(0, 0, 0, 100, 0, 0);
+    fill(255, 0, 0, opacity);    
+    text("X", 100, 10, 0);
     //stroke(0, 255, 0, opacity);
     //line(0, 0, 0, 0, 100, 0);
     //text("Y", 10, 100, 0);
     stroke(0, 0, 255, opacity);
-    text("Z", 0, 10, 100);
     line(0, 0, 0, 0, 0, 100);
+    fill(0,0,255, opacity);
+    text("Z", 0, 10, 100);
     fill(0);
     sphere(5);
+    }
 }
 
 /*Function to render the room*/

@@ -16,12 +16,12 @@ public class Robot{
     float link2B = 172; // distanza baricentro link 2 da baricentro 1
     float link2R2 = 48.43;  // raggio circonferanza alta link2
     float link2H = 245;    // altezza centro circ 2 link 2 da bc link 2
-    float link2C2R = 35;    // raggio circ 2 link 2
+    float link2C2R = 36;    // raggio circ 2 link 2
     float link3C = 46;  // distanza baricentro link 3 da circ 2 link 2
-    float link3align = -3;   // alignement orizzontale per link 3
+    float link3align = 7;   // alignement orizzontale per link 3
     float link4C = 60;  // distanza circ link 4 da baricentro 4
-    float link4BX = 211;   // baricentro link 4 da baricentro link 3
-    float link4BY = 31; // baricentro link 4 da baricentro link 3
+    float link4BY = 79;   // baricentro link 4 da baricentro link 3
+    float link4BX = 145; // baricentro link 4 da baricentro link 3
     float link5C = 2;   // distanza da baricentro 4 circonferenza link 5
     float link5BX = 71;  // distanza da baricentro 4 del baricentro 5
     float link5BY = -10;   // distanza da baricentro 4 del baricentro 5
@@ -55,36 +55,35 @@ public class Robot{
                 case 0 : // rover
                     pushMatrix();
                     /* R0 */
-                    //show_axes(true);   
+                    //show_axes(b);   
                     rotateZ(PI / 2);         
                     //link.setFill(color(144,155,10));                            
-                    //shape(link);
+                    shape(link);
                     popMatrix();
                     break;
                 // link i-esimo
                 case 1:
                     pushMatrix();                    
-                    fill(155);
                     /* Q_01 */
                     rotateZ(q1);
-                    show_axes(true);
+                    show_axes(b);
                     translate(0,0,scale(roverH / 2 + link1H / 2+link1R));
                     rotateX(-PI/2);
                     
                     /*aggiungo rotazione per disegno*/
                     pushMatrix();
+                    rotateX(PI);
                     translate(0,scale(-link1R),0);
-                    //shape(link);
+                    link.setFill(color(75,90,2));
+                    shape(link);
                     popMatrix();
                     break;
                 case 2 : 
                     pushMatrix();
-                    /* Tolgo rotazione estetica*/
-                    //rotateX(-PI/2);
-                    /* Q_12 */
-                    /* Traslo fino a origine R1 */                    
+                    /* Q_12 */                    
                     rotateZ(q2);
-                    show_axes(true);  
+                    show_axes(b);
+                    rotateZ(-PI/2);
                     translate(scale(link2H + link2C2R),0,0);                    
                     link.setFill(color(255, 255,0));
                     pushMatrix();
@@ -92,34 +91,44 @@ public class Robot{
                     rotateZ(-PI/2);
                     /* Traslazione estetica */
                     translate(0,scale(link2B - link1R - link2H - link2C2R),0);                                    
-                    //shape(link);            
+                    shape(link);            
                     popMatrix();
                     break;
                 case 3:
                     pushMatrix();
-                    /* Q_23*/                    
+                    /* Q_23*/                     
                     rotateZ(q3);
-                    show_axes(true);          
-                    rotateX(PI/2);                    
-                    translate(scale(link3C),0,0);
+                    show_axes(b);    
+                    rotateZ(-PI/2);
+                    rotateX(-PI/2);                    
+                    //translate(scale(link3C),0,0);
                     link.setFill(color(0, 255, 255));                              
-                    pushMatrix();
-                    translate(-scale(link2C2R/2),0,scale(link2C2R));
-                    rotateX(PI/2);
-                    //shape(link);
+                    pushMatrix();                            
+                    //translate(-scale(link2C2R),0,scale(link2C2R));
+                    rotateY(-PI/2);
+                    rotateX(-PI/2);
+                    show_axes(b);  
+                    translate(scale(link2C2R),scale(link3C),scale(link3align));                  
+                    shape(link);
                     popMatrix();
                     break;
                 case 4:
                     pushMatrix();
-                    /* Q_04 */
-                    rotateZ(q4+PI/2);
-                    show_axes(true);
-                    translate(0,0,scale(link4C));                    
+                    /* Q_34 */
+                    rotateZ(q4);                    
+                    show_axes(b);
+                    translate(0,0,scale(link3C+link4C));                    
                     rotateX(-PI/2);
                     //
                     link.setFill(color(160,45,90));                    
-                    pushMatrix();
-                    //shape(link);
+                    pushMatrix();                    
+                    rotateZ(-PI/2);
+                    show_axes(b);
+                    /*TODO: posizione x e y corretta, posizione z per allineamento a link precedente ok.
+                      FIXME: se ruoto, il corpo è decentrato, quindi rotazione sfalsata.
+                            Serve aggiungere rotazioni anche in fase di DH*/
+                    translate(scale(link4BX),scale(link4BY),scale(link3align));
+                    shape(link);
                     popMatrix();                   
                     break;
                 case 5:
@@ -127,6 +136,7 @@ public class Robot{
                     translate(scale(link4C),scale(link5BY),0);
                     rotateZ(q5);
                     //show_axes(false);
+                    rotateX(-PI/2);
                     translate(scale( -link5C),0,0);
                     link.setFill(color(100,200,255));
                     //show_axes(false);                    

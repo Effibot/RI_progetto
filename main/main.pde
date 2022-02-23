@@ -26,7 +26,8 @@ background(bgColor);
 noFill();
 
 /*Shapes loading*/
-/*s1 = loadShape("models/Link4.obj");
+/*s1 = loadShape("models/Link4.obj");-
+ 
 s1.scale(0.2);
 s2 = loadShape("models/Link5.obj");
 s2.scale(0.2);
@@ -72,7 +73,8 @@ robot.drawLink(robot);
      
 }
 
-
+float y = 0.0;
+boolean b = false;
 void keyPressed() {
     if (keyCode == LEFT){
         angoloY -= radians(5);
@@ -115,6 +117,14 @@ if (keyCode == '6') {
 }
 if (keyCode == 'X') {
     x = x+1;
+    println(x);
+}
+if (keyCode == 'Y') {
+    y = y+1;
+    println(y);
+}
+if (keyCode == 'B') {
+    b = b ? false : true;
 }
 if (keyCode == 'R'){
     q1 = 0;
