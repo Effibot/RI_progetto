@@ -18,12 +18,18 @@ if size(data,2)>=1
             q3v=values(8);
             while(abs(q1v-q1)>0.001 && abs(q2v-q2)>0.001 && abs(q3v-q3)>0.001)
                 
-                q1v = q1v + K * (q1 - q1v);
-                q2v = q2v + K * (q2 - q2v);
-                q3v = q3v + K * (q3 - q3v);
-                toSend=[q1v,q2v,q3v];
-                %Invio dei dati appena calcolati prima verifico se è
+%                 q1v = q1v + K * (q1 - q1v);
+%                 q2v = q2v + K * (q2 - q2v);
+%                 q3v = q3v + K * (q3 - q3v);
+%                 toSend=[q1v,q2v,q3v];
+
+                   toSend=proporzionale(K,q1,q2,q3,q1v,q2v,q3v);
+               %Invio dei dati appena calcolati prima verifico se è
                 %cambiato
+                
+                    q1v=toSend(1);
+                    q2v=toSend(2);
+                    q3v=toSend(3); 
                 data=read(src,src.NumDatagramsAvailable,"string");
                 if isempty(data)
                     write(src,"["+strjoin(""+strjoin(compose("%d",toSend),", ") ,", ")+"]","string",IPaddr,Port_TX);
@@ -38,9 +44,21 @@ if size(data,2)>=1
                     q3v=values(8);
                 end
             end
+            %Visione
+        case 2 %Specific format:[Proc,x,y,obstacleTarget]
+            x=values(2);
+            y=values(3);
+            %TOADD:Z
+            obsTarg=values(4);
+            %pointToReach [z,y,z] a cui applicare la cinematica inversa
+            pointToReach=visione(x,y,obsTarg);
+            disp(pointToReach);
+            write(src,"["+strjoin(""+strjoin(compose("%d",pointToReach),", ") ,", ")+"]","string",IPaddr,Port_TX);
         otherwise
             disp("Not mapped case")
     end
 end
 
 end
+
+

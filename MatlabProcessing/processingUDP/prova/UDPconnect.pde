@@ -54,6 +54,7 @@ public static class UDPconnect{
   data = subset(data, 0, data.length); //<>//
   String message = new String( data );
   this.results=parse(message);
+  println("Receiving..."+Arrays.toString(this.results));
 }
   public static UDPconnect getInstance(){
     if(instance==null){

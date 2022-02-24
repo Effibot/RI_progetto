@@ -137,12 +137,26 @@ void target(int R) {
   circle(0,0, R + 30); 
   popMatrix();
 }
-
+void visione(float... params) {
+  List<Float> data= new ArrayList<Float>();
+  for(float i:params){
+    data.add(i);
+  }
+  udp.sendData(getFloats(data));
+}
 void mousePressed() {
   x = mouseX - width / 2;
   y = mouseY - height / 2;
   cinInv();
+  //controllo(1,K,q1,q2,q3,q1v,q2v,q3v);
+}
+void keyPressed(){
+  if(keyCode=='1'){
   controllo(1,K,q1,q2,q3,q1v,q2v,q3v);
+  }
+  if(keyCode=='2'){
+    visione(2,x,y);
+  }
 }
 
 /////////////////CINEMATICA INVERSA //////////////////////
