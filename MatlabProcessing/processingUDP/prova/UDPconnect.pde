@@ -12,21 +12,8 @@ public static class UDPconnect{
   private int TX_Port;
   private int RX_Port;
   public UDP udpModule;
-  private ArrayList<Object> toSend;
-  private String buffer;
-  private String results;
-  private String elem;
+  private float[] results={0,0,0};
   
-  private UDPconnect(){
-    instance = this;
-    String TX_IP_Addr="";
-    String RX_IP_Addr="";
-    int TX_Port=0;
-    int RX_Port=0;
-    UDP udpModule;
-    String buffer;
-    String results;
-  }
   private void sendData(float[] toSend){
     int size=toSend.length; //<>//
     String str="[";
@@ -37,13 +24,9 @@ public static class UDPconnect{
       str = str+toSend[i]+",";
       }
     }
-    println("Sending Data...");
+    println("Sending Data..."+str);
     this.udpModule.send(str, this.RX_IP_Addr,this.RX_Port); 
     
-  }
-
-  private void EnableLog(boolean val){
-    this.udpModule.log(val);
   }
   private void openConnection(){
     this.udpModule = new UDP(this,this.TX_Port,this.TX_IP_Addr);
@@ -70,14 +53,8 @@ public static class UDPconnect{
   void receive( byte[] data ) {
   data = subset(data, 0, data.length); //<>//
   String message = new String( data );
-  this.buffer = message;
-  print("questo è il buffer"+this.buffer);
-
-  return;
+  this.results=parse(message);
 }
- private void closeConnection(){
-   this.udpModule.close();
- }
   public static UDPconnect getInstance(){
     if(instance==null){
       synchronized(UDPconnect.class){
@@ -88,20 +65,7 @@ public static class UDPconnect{
     }
     return instance;
   }
-  private float[] simulate(float[] toSend){
-    this.sendData(toSend);
-    if (this.buffer!=null){ //<>//
-    
-    this.results=this.buffer; //<>//
-    println("Receiving..."+this.results);
-    this.buffer = null;
-    return parse(this.results);
-    }
-    else{
-
-      return new float[1];
-    }
-  }
+ //<>// //<>//
   private float[] parse(String str){
     float[] r=new float[1]; //<>//
     if(str!=null){
