@@ -107,7 +107,7 @@ if (keyCode == '3') {
     q3 += radians(2);
 }
 if (keyCode == '4') {
-    q4 += radians(2);
+    q4 += radians(5);
 }
 if (keyCode == '5') {
     q5 += radians(2);
@@ -118,9 +118,11 @@ if (keyCode == '6') {
 if (keyCode == 'X') {
     x = x+1;
     println(x);
+    robot.setPos(x,y);
 }
 if (keyCode == 'Y') {
     y = y+1;
+    robot.setPos(x,y);
     println(y);
 }
 if (keyCode == 'B') {

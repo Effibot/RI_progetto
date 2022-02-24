@@ -1,5 +1,5 @@
 /*Global camera settings*/
-float fov = PI / 8.0;
+float fov = PI / 6.0;
 float cameraZ = (height / 2.0) / tan(fov / 2.0);
 /*Global room settings*/
 float floorWidth = 400;
@@ -14,11 +14,10 @@ void camera_setup() {
     perspective(fov, float(width) / float(height),cameraZ / 10.0, cameraZ * 10.0);
     camera(width / 2.0, height / 4.0, (height / 2.0) / tan(PI * 30.0 / 180.0) + 50, width / 2.0, height / 2.0, 0, 0, 1, 0);
     translate(width / 2, height / 2, 0);
-    //rotateX(PI);
     rotateY(-PI / 4);
     directionalLight(126, 126, 126, 0, 0, 1);
     ambientLight(200, 200, 200);
-  rotateY(-angoloY);
+    rotateY(-angoloY);
     rotateX(angoloX);
 }
 
@@ -26,15 +25,14 @@ void camera_setup() {
         float opacity = 255;
 
 void show_axes(boolean b) {
-    //float opacity = b ? 255 : 0;
     if (b) {
-    stroke(255, 0, 0, opacity);
+    /*stroke(255, 0, 0, opacity);
     line(0, 0, 0, 100, 0, 0);
     fill(255, 0, 0, opacity);    
     text("X", 100, 10, 0);
-    //stroke(0, 255, 0, opacity);
-    //line(0, 0, 0, 0, 100, 0);
-    //text("Y", 10, 100, 0);
+    stroke(0, 255, 0, opacity);
+    line(0, 0, 0, 0, 100, 0);
+    text("Y", 10, 100, 0);*/
     stroke(0, 0, 255, opacity);
     line(0, 0, 0, 0, 0, 100);
     fill(0,0,255, opacity);
@@ -50,12 +48,11 @@ void room() {
     rotateZ(PI/2);
     /*Floor*/
     pushMatrix();
-    translate(0, 0, -height/8);
+    translate(0, 0, -floorHeight/2);
     pushMatrix();
-    translate(0,0,floorDepth/2+10);
     show_axes(true);
     popMatrix();
-    fill(255,0,0);
+    fill(255);
     box(floorWidth, floorHeight, floorDepth);
     /*Left wall*/
     pushMatrix();
