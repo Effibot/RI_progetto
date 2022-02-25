@@ -31,6 +31,8 @@ public class Robot{
     float link5BX = 71;  // distanza da baricentro 4 del baricentro 5
     float link6B = 72;   // distanza da baricentro 4 del baricentro 5
     
+
+    float inscript = scale(roverD/2+link4BZ + link5BX + link6B);
     private Robot() {
         // Carico tutte istanze dei link
         for (int i = 0; i <= 6; i++) { 
@@ -72,8 +74,8 @@ public class Robot{
         // Traslazione lungo l'asse X di 'a'
         translate(scale(a),0,0);
     }
-    public void drawLink(Robot robot) {
-        translate(0, 0, -floorHeight/2 + scale(roverH/2+roverW));
+    public void drawLink(Robot robot, float x, float y) {
+        //translate(0, 0, -floorHeight/2 + scale(roverH/2+roverW));
         for (int i = 0; i < robot.link.size(); i++) {
             PShape link = robot.link.get(i);
             switch(i) {

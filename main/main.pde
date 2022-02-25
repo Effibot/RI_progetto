@@ -1,7 +1,7 @@
 /*Global variables for window configuration*/
 PShape s1,s2,s3,s4,s5,s6;
-int viewWidth = 1000; 
-int viewHeight = 1000;
+int viewWidth = 1920; 
+int viewHeight = 1058;
 color bgColor = color(0,0,0);
 Robot robot;
 
@@ -16,6 +16,8 @@ float q4 = 0;
 float q5 = 0;
 float q6 = 0;
 float x = 0;
+Obstacle obs;
+boolean  play = false;
 void settings() {
 /*Sketch view setup*/
 size(viewWidth, viewHeight, P3D);
@@ -36,6 +38,7 @@ s3.scale(0.2);
 s4=loadShape("models/rover.obj");
 s4.scale(0.2);*/
 robot = new Robot();
+
 //s5 = robot.loadShape("rover.obj");
 }
 
@@ -43,13 +46,26 @@ void draw() {
 /*Background init*/
 background(bgColor);
 /*Loading Camera settings*/
-camera_setup();
+
 /*Initialize the world*/
 //rotateY(PI/4);
+//translate(x,0,0);
+//translate(0,y,0);
+
+if (play) {
+    camera_setup();
 room();
+robot.drawLink(robot,x,y);
+} else {
+    roomSetup();
+}
+/*camera_setup();
+room();*/
+
+
 //show_axes(false);
 
-fill(166);
+
 /*rotateY(gamma);
 rotateX(alpha);
 rotateZ(beta);*/
@@ -65,7 +81,10 @@ shape(s2);
 //translate(0,-18.5,0);
 popMatrix();*/
 //shape(robot.link.get(0));
-robot.drawLink(robot);
+
+//
+//obs = new Obstacle(floorWidth/2, floorHeight/2,0,robot.inscript,40,8);
+
 /*applyMatrix(cos(q1),0.0,-sin(q1),0.0,
              sin(q1),0.0,cos(q1),0.0,
              0.0,-1.0,0.0,robot.scale(robot.roverH / 2 + robot.link1H / 2),
@@ -87,6 +106,9 @@ void keyPressed() {
     }
         if (keyCode == UP){
         angoloX += radians(5);
+    }
+    if (keyCode == ENTER){
+        play = true;
     }
 if (keyCode == 'A') {
     alpha += 1;
