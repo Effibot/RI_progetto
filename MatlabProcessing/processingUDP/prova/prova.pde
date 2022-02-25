@@ -1,4 +1,4 @@
-import processing.svg.*; //<>// //<>// //<>// //<>// //<>// //<>//
+import processing.svg.*; //<>// //<>//
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,8 +146,8 @@ void visione(float... params) {
   for(float i:params){
     data.add(i);
   }
+  while(udp.bc==new float[2]){}
   udp.sendData(getFloats(data));
-  println("Baricentro..."+Arrays.toString(udp.bc));
 }
 void mousePressed() {
   x = mouseX - width / 2;
