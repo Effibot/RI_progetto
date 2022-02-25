@@ -52,7 +52,6 @@ if size(data,2)>=1
             obsTarg=values(4);
             %pointToReach [z,y,z] a cui applicare la cinematica inversa
             pointToReach=visione(x,y,obsTarg);
-            disp(pointToReach);
             write(src,"["+strjoin(""+strjoin(compose("%d",double(pointToReach)),", ") ,", ")+"]","string",IPaddr,Port_TX);
         otherwise
             disp("Not mapped case")

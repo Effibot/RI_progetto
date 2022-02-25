@@ -1,0 +1,4 @@
+function val = f(val)
+%val.border(:,:)=1;
+val(:,:,[2 1]);
+end
