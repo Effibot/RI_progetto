@@ -5,18 +5,22 @@ import java.util.Collections;
 import java.util.List;
 import java.io.*;
 import java.util.*;
-public static class UDPconnect{
+protected static class UDPconnect{
   private static volatile UDPconnect instance;
   private String TX_IP_Addr;
   private String RX_IP_Addr;
   private int TX_Port;
   private int RX_Port;
   public UDP udpModule;
-  private float[] results={0,0,0};
-  
+  //private float[] results={0,0,0};
+  private float action;
+  private float[] giunti= new float[3];
+  private float[] bc= new float[2];
   private void sendData(float[] toSend){
-    int size=toSend.length; //<>//
+    int size=toSend.length; //<>// //<>// //<>//
     String str="[";
+    println("To Send:"+Arrays.toString(toSend)+"\tAction..."+toSend[0]);
+    this.action = toSend[0];
     for (int i=0; i<size;i++){
       if (i==size-1){
         str=str+toSend[i]+"]";
@@ -51,10 +55,19 @@ public static class UDPconnect{
   }
 
   void receive( byte[] data ) {
-  data = subset(data, 0, data.length); //<>//
+  data = subset(data, 0, data.length); //<>// //<>// //<>//
   String message = new String( data );
-  this.results=parse(message);
-  println("Receiving..."+Arrays.toString(this.results));
+  switch(Math.round(this.action)){
+    case 1:
+    this.giunti= parse(message);
+    break;
+    case 2:
+    this.bc=parse(message);
+    break;
+    
+  }
+  //this.results=parse(message);
+  //println("Receiving..."+Arrays.toString(this.results));
 }
   public static UDPconnect getInstance(){
     if(instance==null){
@@ -66,9 +79,9 @@ public static class UDPconnect{
     }
     return instance;
   }
- //<>// //<>//
+ //<>// //<>// //<>// //<>//
   private float[] parse(String str){
-    float[] r=new float[1]; //<>//
+    float[] r=new float[1]; //<>// //<>// //<>//
     if(str!=null){
     String nobrackets = str.replaceAll("[\\p{Ps}\\p{Pe}]", "");
     String[] strValues= nobrackets.split(",");

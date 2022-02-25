@@ -1,6 +1,9 @@
+import processing.svg.*; //<>// //<>// //<>// //<>// //<>// //<>//
+
 import java.util.ArrayList;
 import java.util.List;
 UDPconnect udp;
+float obsTarget=1;
 ArrayList<String> params;
 String TXaddr="127.0.0.1";
 String RXaddr="127.0.0.1";
@@ -71,9 +74,9 @@ void draw(){
   
   treDoF(ray, L1, L2, L3, larg, q1, q2, q3, rgb); // disegno robot phantom.
   popMatrix(); // elimino s.d.r.
-  q1v=udp.results[0];
-  q2v=udp.results[1];
-  q3v=udp.results[2];
+  q1v=udp.giunti[0];
+  q2v=udp.giunti[1];
+  q3v=udp.giunti[2];
   //controllo(1,K,q1,q2,q3,q1v,q2v,q3v);   // inserisco legge di controllo
   pushMatrix(); // risalvo s.d.r.
   translate(width / 2 , height / 2);   // traslo
@@ -86,7 +89,7 @@ void draw(){
   
 }
 
- //<>// //<>// //<>// //<>//
+ //<>// //<>// //<>//
 float[] getFloats(List<Float> values) {
     int length = values.size();
     float[] result = new float[length];
@@ -95,16 +98,8 @@ float[] getFloats(List<Float> values) {
     }
     return result;
   }
- //<>// //<>//
-// definisco legge di controllo
-void controllo(float... params) {
-  List<Float> data= new ArrayList<Float>();
-  for(float i:params){
-    data.add(i);
-  }
-  udp.sendData(getFloats(data));
-  
-}
+ //<>//
+
 void treDoF(int ray, int L1, int L2, int L3, int larg, float q1, float q2, float q3, color rgb) {
   rotate(q1);
   link(ray,L1,larg,rgb);
@@ -137,12 +132,22 @@ void target(int R) {
   circle(0,0, R + 30); 
   popMatrix();
 }
+// definisco legge di controllo
+void controllo(float... params) {
+  List<Float> data= new ArrayList<Float>();
+  for(float i:params){
+    data.add(i);
+  }
+  udp.sendData(getFloats(data));
+  
+}
 void visione(float... params) {
   List<Float> data= new ArrayList<Float>();
   for(float i:params){
     data.add(i);
   }
   udp.sendData(getFloats(data));
+  println("Baricentro..."+Arrays.toString(udp.bc));
 }
 void mousePressed() {
   x = mouseX - width / 2;
@@ -155,7 +160,7 @@ void keyPressed(){
   controllo(1,K,q1,q2,q3,q1v,q2v,q3v);
   }
   if(keyCode=='2'){
-    visione(2,x,y);
+    visione(2,x,y,obsTarget);
   }
 }
 
