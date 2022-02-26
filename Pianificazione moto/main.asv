@@ -1,8 +1,0 @@
-clc 
-clear 
-close all
-%%
-dim=[50,50];
-obs=[10,10,2;39,20,3;8,8,3;30,30,4;40,40,1;21,5,110,25,2];
-map=Map(dim,obs);
-figure,imshow(map.grid)
