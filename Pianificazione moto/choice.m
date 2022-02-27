@@ -4,14 +4,14 @@ logical=zeros(k,1);
 for i=1:k
     blk=m(:,:,i);
     dim=size(blk);
-    if dim(1)<=2
-        logical(i,1)=0;
-    elseif blk==ones(dim)
-        logical(i,1)=0;
-    elseif blk==zeros(dim)
-        logical(i,1)=0;
-    elseif  findSubmat(blk,1,s)
-        logical(i,1)=1;
+    if dim(1)<s
+        logical(i,1)=false;
+    elseif isequal(blk,ones(dim))
+        logical(i,1)=false;
+    elseif isequal(blk,zeros(dim))
+        logical(i,1)=false;
+    elseif dim(1)>s && ~isempty(find(ismember(blk,0), 1))
+        logical(i,1)=true;
     end
 end
 toSplit=find(logical==1);
