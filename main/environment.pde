@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 /*Global camera settings*/
 float fov = PI / 4.0;
 float cameraZ = (height / 2.0) / tan(fov / 2.0);
@@ -13,7 +14,6 @@ float angoloYp=0;
 
 float targetR = 20;
 
-ArrayList<Obstacle> obsList = new ArrayList<Obstacle>();
 
 void camera_setup() {
     //perspective(fov, float(width) / float(height),cameraZ / 10.0, cameraZ * 10.0);
@@ -79,15 +79,16 @@ void roomSetup() {
     pushMatrix();
     translate(floorWidth/2+border,floorWidth/2+border,0);
     fill(155);
-    box(floorWidth, floorHeight, floorDepth);
-    target();
-    
+    //box(floorWidth, floorHeight, floorDepth);
+          drawObstacle(obsList);
+
+    target();  
     popMatrix();
 }
 void mousePressed() {
 angoloYp=angoloY+PI*mouseX/10000.0;
 angoloXp=angoloX+PI*radians(mouseY/10000.0);
-objList.add(new Obstacle(targetX, targetY, 0.0, targetR, 0, 1.0));
+ obsList.add(new Obstacle(mouseX , mouseY , 0.0, targetR, 1.0));
 }
 
 
@@ -186,5 +187,18 @@ void cylinder(float xc, float yc, float zc, float bottom, float top, float h, in
   endShape();
   
   popMatrix();
+}
+public void drawObstacle(ArrayList<Obstacle> obsList){
+  if (!obsList.isEmpty()){
+    for (Obstacle obs : obsList){
+      pushMatrix();
+      //translate(x,y,floorDepth);    
+      translate(obs.xc-modelX(0,0,0),obs.yc-modelY(0,0,0),floorDepth+1);
+
+      cylinder(0,0,0,obs.r,obs.r,obs.h,obs.sides);
+      println(obs.toString()+"\nSize: "+obsList.size());
+      popMatrix();
+    }
+  }
 }
 
