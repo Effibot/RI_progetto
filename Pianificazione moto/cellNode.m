@@ -1,4 +1,4 @@
-classdef cells < handle
+classdef cellNode < handle
     properties
         bc
         dim
@@ -9,7 +9,7 @@ classdef cells < handle
     end
     
     methods
-        function obj = cells(location,dim,values)
+        function obj = cellNode(location,dim,values)
             obj.dim=dim;
             obj.location=location;
             obj.values=values;
@@ -48,6 +48,19 @@ classdef cells < handle
             
             ret=[upBorder;rightBorder;botBorder;leftBorder];
         end
+        function obj = obstacleFill(obj, obstacles)
+            % Obstacle Filling
+            grid = obj.values;
+            for i=1:size(obstacles,1)
+                x=obstacles(i,1);
+                y=obstacles(i,2);
+                r=obstacles(i,3);
+                grid(x,y)=1;
+                grid(fix(-r/2)+x-1:fix(r/2)+x+1,...
+                    fix(-r/2)+y-1:fix(r/2)+y+1)=1;
+            end
+            obj.values = grid;
+        end       
     end
 end
 

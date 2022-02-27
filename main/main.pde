@@ -1,9 +1,10 @@
 /*Global variables for window configuration*/
 PShape s1,s2,s3,s4,s5,s6;
 int viewWidth = 1920; 
-int viewHeight = 1058;
+int viewHeight = 1000;
 color bgColor = color(0,0,0);
 Robot robot;
+final static ArrayList<Obstacle> obsList = new ArrayList<Obstacle>();
 
 float alpha = 0;
 float beta = 0;
@@ -58,6 +59,7 @@ room();
 robot.drawLink(robot,x,y);
 } else {
     roomSetup();
+
 }
 /*camera_setup();
 room();*/

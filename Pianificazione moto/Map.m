@@ -32,9 +32,9 @@ classdef Map <handle
             obj.grid=ret;
         end
         function obj= addCell(obj,data)
-            if isempty(findobj(obj.cell,'bc',data.bc))
+%             if isempty(findobj(obj.cell,'bc',data.bc))
             obj.cell(end+1)=data;
-            end
+%             end
         end
         function obj=makecells(obj,dimRobot)
             if obj.cellSizs==dimRobot+1

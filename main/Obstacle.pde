@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class Obstacle{
     private float xc;
     private float yc;
@@ -77,10 +78,14 @@ void cylinder(float xc, float yc, float zc, float bottom, float top, float h, in
 }
 void addObstacle(float x, float y){
     fill(255);
-    translate(floorWidth/2+border,floorWidth/2+border,floorDepth+1);
-    cylinder(x,y,0,this.r,this.r,this.h,this.sides);
+    //translate(floorWidth/2+border,floorWidth/2+border,floorDepth+1);
+    //cylinder(x,y,0,this.r,this.r,this.h,this.sides);
 }
-  public static void drawObstacle(Obstacle obs){
-    cylinder(obs.x,obs.y,0,obj.r,obs.r,obs.h,obs.sides);
-  }
+@Override
+public String toString(){
+  return(
+    "Obstacle BC: ["+this.xc+","+this.yc+","+this.zc+"]\n"+
+    "Obstacle [r, h]: ["+this.r+","+this.h+"]"
+  );
+}
 }
