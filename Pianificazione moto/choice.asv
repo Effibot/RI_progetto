@@ -1,0 +1,15 @@
+function logical = choice(matrix)
+robsize=matrix{2};
+matrix=matrix{1};
+dim=size(matrix);
+if dim(1)>=1
+    logical=1
+elseif matrix==ones(dim)
+    logical=0;
+elseif matrix==zeros()
+    logical=0;
+elseif ismember(1,matrix) && sqrt(dim(1))>=robsize
+    logical=1;
+end
+end
+
