@@ -27,7 +27,11 @@ for dim = [64 32 16 8 4]
 end
 blocks(end,1:end) = 1;
 blocks(1:end,end) = 1;
+figure, imshow(blocks,[])
+
 blocks=imcomplement(blocks);
+figure, imshow(blocks,[])
+
 for i=1:size(obs,1)
     x=obs(i,1);
     y=obs(i,2);
@@ -88,14 +92,19 @@ end
 
 
 %% Centroid
-bc=regionprops(blocks,'centroid');
+props=regionprops(blocks,'centroid','boundingbox');
+bc=[props.Centroid];
+bc=bc';
+bc=reshape(bc,[size(bc,1)/2 2]);
+% newObs=[props.BoundingBox];
+% newObs=newObs';
+% newObs=reshape(newObs,[size(newObs,1)/3 3]);
 
-centroids = cat(1,bc.Centroid);
-figure
 imshow(blocks)
 hold on
 plot(centroids(:,1),centroids(:,2),'b*')
 hold off
+
 % obsregions=obsReg(obs);
 % edge=makeedge(bc,obs);
 %%
