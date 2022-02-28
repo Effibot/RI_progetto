@@ -23,7 +23,16 @@ figure
 blockedMap=drawMap(blankMap,map);
 imshow(blockedMap);
 %%
-
+function list= getAllChildren(map)
+var=map.children;
+list=Cell1.empty;
+while ~isempty(var)
+    list=var;
+    for i=var
+        list=[list,]
+    end
+end
+end
 
 %%
 function blankMap=drawMap(blankMap,mapCell)
