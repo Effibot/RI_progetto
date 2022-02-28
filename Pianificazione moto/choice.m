@@ -3,6 +3,7 @@ k=size(m,3);
 logical=zeros(k,1);
 for i=1:k
     blk=m(:,:,i);
+    disp(blk);
     dim=size(blk);
     if dim(1)<s
         logical(i,1)=false;
