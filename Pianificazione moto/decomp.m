@@ -1,9 +1,10 @@
-function childrenList= decomp(obj,minDim,thresh,father)
+function l= decomp(obj,minDim,thresh,father,~)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
+l=Cell1.empty;
 children=Cell1.empty;
 grid=obj.value;
+father=obj;
 maximum=grid(find(ismember(grid, max(grid(:))),1));
 minimum=grid(find(ismember(grid, min(grid(:))),1));
 
@@ -30,25 +31,34 @@ if maximum-minimum>thresh && size(grid,1)/2>minDim
     obj.addChildren(child2,father);
     obj.addChildren(child3,father);
     obj.addChildren(child4,father);
+        l=[l,children];
 
-elseif maximum-minimum<thresh && isequal(grid,ones(size(grid)))
+    obj.setAllChildren(child1);
+        obj.setAllChildren(child2);
+    obj.setAllChildren(child3);
+    obj.setAllChildren(child4);
+
+elseif  isequal(grid,ones(size(grid)))
     disp("No figli...");
     disp(obj.value);
     dim=size(grid);
     child=Cell1(grid,[1,1],dim);
     obj.addChildren(child,father);
+    l=[l,child];
+        obj.setAllChildren(child);
 
-elseif maximum-minimum<thresh && isequal(grid,zeros(size(grid)))
+elseif isequal(grid,zeros(size(grid)))
     disp("Ostacolo...")
     disp(obj.value)
     dim=size(grid);
     
     child=Cell1(zeros(size(grid)),[1,1],dim);
     obj.addChildren(child,father);
+    l=[l,children];
+        obj.setAllChildren(child);
 
 end
 for i=children
-    decomp(i,minDim,thresh,obj);
-end
+    decomp(i,minDim,thresh,obj,l)
 end
 

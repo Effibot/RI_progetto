@@ -8,25 +8,40 @@ classdef Cell1<handle
         value
         idx
         obstacles
+        dim
+        allchildren
     end
     
     methods
-        function obj = Cell1(value,idx)
+        function obj = Cell1(value,idx,dim)
             %CELL1 Construct an instance of this class
             %   Detailed explanation goes here
             obj.value = value;
             obj.idx=idx;
+            obj.dim=dim;
             obj.children=Cell1.empty;
             obj.obstacles=Cell1.empty;
             obj.father=Cell1.empty;
+            obj.allchildren=Cell1.empty;
         end
         function obj = addChildren(obj,child,father)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
             obj.children(end+1)=child;
+            if ~isempty(father)
             obj.father(end+1)=father;
-            obj.idx=obj.idx
+            end
         end
+        function obj=setAllChildren(obj,child)
+            main=obj;
+            val=false;
+            while main.dim~=64 && ~isempty(main.father)
+                main=main.father;
+                true;
+            end
+            obj.allchildren(end+1)=child;
+        end
+        
     end
 end
 

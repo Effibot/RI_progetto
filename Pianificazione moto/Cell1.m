@@ -9,6 +9,7 @@ classdef Cell1<handle
         idx
         obstacles
         dim
+        allchildren
     end
     
     methods
@@ -20,14 +21,23 @@ classdef Cell1<handle
             obj.dim=dim;
             obj.children=Cell1.empty;
             obj.obstacles=Cell1.empty;
-            obj.father=Cell1.empty;
+            obj.allchildren=Cell1.empty;
         end
         function obj = addChildren(obj,child,father)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
             obj.children(end+1)=child;
-            if ~isempty(father)
-            obj.father(end+1)=father;
+            child.father=father;
+        end
+        function obj=setAllChildren(obj,child)
+            ma=child;
+            val=false;
+            while ma.dim~=64 
+                ma=ma.father;
+                val=true;
+            end
+            if val==true
+            obj.allchildren(end+1)=child;
             end
         end
         
