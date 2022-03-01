@@ -10,6 +10,7 @@ classdef Cell1<handle
         obstacles
         dim
         allchildren
+        bc
     end
     
     methods
@@ -22,6 +23,10 @@ classdef Cell1<handle
             obj.children=Cell1.empty;
             obj.obstacles=double.empty;
             obj.allchildren=Cell1.empty;
+            obj.getBc(idx,dim);
+        end
+        function getBc(obj,idx,dim)
+            obj.bc=[fix(idx(1)+dim/2),fix(dim+idx(2)/2)];
         end
         function obj = addChildren(obj,child,father)
             %METHOD1 Summary of this method goes here

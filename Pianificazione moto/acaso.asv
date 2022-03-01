@@ -95,10 +95,10 @@ for node=nodeList
     tempList=nodeList(~ismember(nodeList,findobj(nodeList,'id',id)));
     % nodespace = borderLeft, borderTop, borderRight, borderDown
     nodespace=borderSpace(node);
-%     plot(nodespace(1,:),nodespace(2,:),'g','markersize',5)
+    plot(nodespace(1,:),nodespace(2,:),'g','markersize',5)
     for t = tempList        
         tnodespace=borderSpace(t);
-%         plot(tnodespace(1,:),tnodespace(2,:),'r','markersize',3)
+        plot(tnodespace(1,:),tnodespace(2,:),'r','markersize',3)
         %Left
         [in, on] = inpolygon(tnodespace(1,:),tnodespace(2,:),nodespace(1,:),nodespace(2,:));        
         temp = find(on);
@@ -109,16 +109,12 @@ for node=nodeList
         maxSize = min(node.dim,t.dim);
         if maxSize == segDim
             node.setAdj(t.id);
-            A(node.id,t.id) = 1;
-            A(t.id,node.id) = 1;
+            
         end
     end    
 end
 hold off
-%%
-G = graph(A);
-P=shortestpath(G,7,41);
-%%
+
 function r=borderSpace(node)
     borderLeft = linspace(node.corner(1,1),node.corner(1,2));
     borderLeft = [node.corner(2,1)*ones(size(borderLeft));borderLeft];
@@ -130,7 +126,6 @@ function r=borderSpace(node)
     borderDown = [borderDown;node.corner(1,4)*ones(size(borderDown))];
     r = horzcat(borderLeft,borderTop,borderRight,borderDown);
 end
-
 %%
 % xx=[25,56.5];
 % syms xc yc r t x0 y0;

@@ -14,14 +14,6 @@ if maximum-minimum>thresh && size(grid,1)/2>minDim
     grid2=grid(1:dim,dim+1:end);
     grid3=grid(dim+1:end,1:dim);
     grid4=grid(dim+1:end,dim+1:end);
-    %     imshow(grid1);
-    %     hold on;
-    %     imshow(grid2);
-    %     hold on;
-    %     imshow(grid3);
-    %     hold on;
-    %     imshow(grid4);
-    %     hold on;
     child1=Cell1(grid1,[1,1],dim);
     child2=Cell1(grid2,[1,dim],dim);
     child3=Cell1(grid3,[dim,1],dim);
@@ -47,7 +39,7 @@ elseif  isequal(grid,ones(size(grid)))
     l=[l,child];
         obj.setAllChildren(child);
 
-elseif isequal(grid,zeros(size(grid))) ||  size(grid,1)/2<minDim
+elseif isequal(grid,zeros(size(grid))) ||  size(grid,1)<minDim
     disp("Ostacolo...")
     disp(obj.value)
     dim=size(grid);
