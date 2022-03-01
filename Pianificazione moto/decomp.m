@@ -47,12 +47,13 @@ elseif  isequal(grid,ones(size(grid)))
     l=[l,child];
         obj.setAllChildren(child);
 
-elseif isequal(grid,zeros(size(grid)))
+elseif isequal(grid,zeros(size(grid))) ||  size(grid,1)/2<minDim
     disp("Ostacolo...")
     disp(obj.value)
     dim=size(grid);
     
     child=Cell1(zeros(size(grid)),[1,1],dim);
+    child.obstacles=1;
     obj.addChildren(child,father);
     l=[l,children];
         obj.setAllChildren(child);

@@ -32,13 +32,13 @@ figure, imshow(blocks,[])
 blocks=imcomplement(blocks);
 figure, imshow(blocks,[])
 
-for i=1:size(obs,1)
-    x=obs(i,1);
-    y=obs(i,2);
-    r=obs(i,3);
-    blocks(fix(-r/2)+x-1:fix(r/2)+x+1,fix(-r/2)+y-1:fix(r/2)+y+1)=0;
-end
-figure, imshow(blocks,[])
+% for i=1:size(obs,1)
+%     x=obs(i,1);
+%     y=obs(i,2);
+%     r=obs(i,3);
+%     blocks(fix(-r/2)+x-1:fix(r/2)+x+1,fix(-r/2)+y-1:fix(r/2)+y+1)=0;
+% end
+% figure, imshow(blocks,[])
 
 
 % blocks=true(size(S));
@@ -94,16 +94,13 @@ end
 %% Centroid
 props=regionprops(blocks,'centroid','boundingbox');
 bc=[props.Centroid];
-bc=bc';
-bc=reshape(bc,[size(bc,1)/2 2]);
-% newObs=[props.BoundingBox];
-% newObs=newObs';
-% newObs=reshape(newObs,[size(newObs,1)/3 3]);
-
 imshow(blocks)
 hold on
-plot(centroids(:,1),centroids(:,2),'b*')
-hold off
+numObj = numel(props);
+for k = 1 : numObj
+plot(props(k).Centroid(1), props(k).Centroid(2), 'r.')
+end
+
 
 % obsregions=obsReg(obs);
 % edge=makeedge(bc,obs);

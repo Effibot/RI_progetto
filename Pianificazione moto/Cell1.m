@@ -20,7 +20,7 @@ classdef Cell1<handle
             obj.idx=idx;
             obj.dim=dim;
             obj.children=Cell1.empty;
-            obj.obstacles=Cell1.empty;
+            obj.obstacles=double.empty;
             obj.allchildren=Cell1.empty;
         end
         function obj = addChildren(obj,child,father)
