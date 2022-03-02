@@ -86,6 +86,7 @@ for dim = [32 16 8 4]
         end
     end
 end
+
 %% Adiacenze
 edges=[];
 hold on
@@ -114,9 +115,27 @@ for node=nodeList
         end
     end    
 end
-hold off
 %%
 G = graph(A);
+%% Plotting graph over image
+% Plotting node id
+hold on;
+for node=nodeList
+    text(node.bc(2),node.bc(1),int2str(node.id),'HorizontalAlignment','center');
+end
+%% Plotting Edges
+hold on
+for i=1:size(A,1)
+    for j=1:size(A,2)
+        if A(i,j)==1
+            x1=findobj(nodeList,'id',i);
+            x2=findobj(nodeList,'id',j);
+            x1_coord=x1.bc;
+            x2_coord=x2.bc;
+            plot([x1_coord(2) x2_coord(2)],[x1_coord(1),x2_coord(1)],'g');
+        end
+    end
+end
 P=shortestpath(G,7,41);
 %%
 function r=borderSpace(node)
@@ -131,55 +150,5 @@ function r=borderSpace(node)
     r = horzcat(borderLeft,borderTop,borderRight,borderDown);
 end
 
-%%
-% xx=[25,56.5];
-% syms xc yc r t x0 y0;
-% xc = @(x0,r,t) x0+r*cos(t);
-% yc = @(y0,r,t) y0+r*sin(t);1111111
-% t = 0:0.1:360;
-% r = 16;
-% plot(xc(xx(1),r,t), yc(xx(2),r,t), 'b')
-% obsregions=obsReg(obs);
-% edge=makeedge(bc,obs);
-%%
-%
-% function edges=makeedge(bc,obs)
-% syms x f(x);
-% edge=double.empty(0,2);
-% dim=size(obs,1);
-% for x1=bc
-%     for x2=bc
-%         if ~isequal(x,y)
-%             f(x)=(x2(2)-x1(2))*(x-x1(1))/(x2(1)-x1(1))+x2(1);
-%             for i=1:dim
-%                 y=f(obs(i,1))~=obs(i,2)%Ostacolo non interseca i baricentri
-%
-%             end
-%         end
-%     end
-% end
-% end
 
-% %% Obs regions
-% function points=obsReg(obs)
-% points=double.empty(0,2);
-% for i=1:size(obs,1)
-%     x=obs(i,1);
-%     y=obs(i,2);
-%     r=obs(i,3);
-%     x_val=fix(-r/2)+x-1:fix(r/2)+x+1;
-%     for i=x_val
-%         pointx=i*ones(r,1);
-%         points=vertcat(points,horzcat(pointx,y:r+y-1));
-%     end
-%     y_val=fix(-r/2)+y-1:fix(r/2)+y+1;
-% end
-% end
-%%
-% function idx=getIdx(x,y,offsetX,offsetY)
-% idx=double.empty(0,2);
-% for i=x:offsetX
-%     idx=vertcat(idx,[i*ones(1,offsetX-x+1);y:offsetY]');
-% end
-% end
 

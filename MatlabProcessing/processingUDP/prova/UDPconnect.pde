@@ -60,9 +60,11 @@ protected static class UDPconnect{
   switch(Math.round(this.action)){
     case 1:
     this.giunti= parse(message);
+    println("Receiving new data..."+this.giunti);
     break;
     case 2:
     this.bc=parse(message);
+    println("Receiving bc..:"+this.bc);
     break;
     
   }
