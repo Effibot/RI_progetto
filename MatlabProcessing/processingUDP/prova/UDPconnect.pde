@@ -64,7 +64,7 @@ protected static class UDPconnect{
     break;
     case 2:
     this.bc=parse(message);
-    println("Receiving bc..:"+this.bc);
+    println("Receiving bc..:"+Arrays.toString(this.bc));
     break;
     
   }

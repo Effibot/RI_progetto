@@ -17,22 +17,22 @@ rect(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
 % Calcolatrice in Diagonale con sfondo bianco -> Identificata
 % filename = 'Immagini/rotateCalcW.jpg';
 % Calcolatrice Orizzontale con Ombra -> Identificata con pxToDel = 40000
-% filename = 'Immagini/horizontalCalcShadow.jpg';
+filename = 'Immagini/horizontalCalcShadow.jpg';
 % Calcolatrice Orizzontale sfondo bianco -> Identificata
-% filename = 'images/horizontalCalcW.jpg';
+% filename = 'Immagini/horizontalCalcW.jpg';
 % Calcolatrice Orizzontale sfondo nero -> Identificata
 % filename = 'images/horizontalCalcB.jpg';
 % Rondella Circolare -> Identificata
 % filename = 'Immagini/rondella.jpg';
 % Mensola Triangolare -> Identificata
-filename = 'Immagini/triangolo.jpg';
+% filename = 'Immagini/triangolo.jpg';
 % Dado Esagonale  -> Identificato
 % filename = 'images/dadoEsagono.jpg';
 % Controller  -> Bordi troppo diversi da loro, non identificata.
 % filename = 'Immagini/controller.jpg';
 % filename = 'Immagini/QuadratoRosso.jpg';
 imgRGB = imread(filename);  % Caricamente Immagine
-
+imgRGB=imnoise(imgRGB,'salt & pepper',0.5);
 %% Pre-Processamento: Compressione dell'immagine
 
 % Per mantenere un rapporto di grandezze tra l'aspetto dell'immagine in
@@ -89,6 +89,9 @@ mask1=strel('square',10);
 % imclose() applica operatori morfologici su immagini in b/n  o greyscale
 imgBW3 = imclose(imgBW2, mask);
 imgBW3 = imopen(imgBW3, mask1);
+%% Graficare tutte le proiezioni dell'immagine
+% Graficando il massimo in funzione dell'angolo
+
 
 %% Eliminazione "buchi" dall'immagine
 % permette di eliminare artefatti grafici simili a riflessi sulla
