@@ -15,7 +15,7 @@ function decomp(node, minDim, thresh)
     % node: node of class tree
     % minDim: minimun size of blocks to split
     % thresh: threshold to decide when to split or not
-    child = rectNode.empty(0,4);
+    child = rectNode.empty(0,1);
     grid = node.value;
     % max value
     maximum = grid(find(ismember(grid,max(grid(:))),1));
@@ -23,26 +23,28 @@ function decomp(node, minDim, thresh)
     minimum = grid(find(ismember(grid, min(grid(:))),1));
 
     newDim = size(grid,1)/2;
-    if abs(minimum-maximum) > thresh && newDim > minDim
+    if abs(minimum-maximum) > thresh && newDim >= minDim
         % create new node instances
         for i = 1:4
             lc = getLc(node.lc, newDim, i);
             bc = getBc(lc, newDim);
             childGrid = getGrid(grid, newDim, i);
             corners = getCorners(lc, newDim);
-            child(i) = rectNode(bc, lc, newDim,...
+            child(end+1) = rectNode(bc, lc, newDim,...
                 corners, 0, childGrid);
             child(i).setParent(node);
         end
         node.addChildrenList(child);
     elseif isequal(grid, ones(size(grid)))
-        % the grid is full of obstacles
-        % idea: trovo indici di tutto il quadrato
-        lc = getLc(node.lc, newDim, i);
-        bc = getBc(lc, newDim);
-        childGrid = getGrid(grid, newDim, i);
-        corners = getCorners(lc, newDim);
-        child = rectNode();
+        % the grid is empty
+        node.prop = 'g';
+    elseif isequal(grid, zeros(size(grid))) ||  newDim < minDim
+        node.prop = 'r';
+    end
+    if ~isempty(node.child)
+        for c = node.getChildren()
+            decomp(c, minDim, thresh);
+        end
     end
 end
 function newGrid = getGrid(grid, dim, num)
@@ -69,11 +71,11 @@ function lc = getLc(fatherlc, dim, num)
         case 1
             lc = fatherlc;
         case 2
-            lc = [fatherlc(1) fatherlc(2)+dim(2)];
+            lc = [fatherlc(1) fatherlc(2)+dim];
         case 3
             lc = fatherlc + dim;
         case 4
-            lc = [fatherlc(1)+dim(1) fatherlc(2)];
+            lc = [fatherlc(1)+dim fatherlc(2)];
     end
 end
 function bc = getBc(nodeloc, dim)
@@ -83,8 +85,8 @@ function bc = getBc(nodeloc, dim)
 end
 function corners = getCorners(nodeloc, dim)
     cUpLeft = [nodeloc(1),nodeloc(2)];
-    cDWLeft = [nodeloc(1)+dim,nodeloc(2)];
-    cUpRig = [nodeloc(1),nodeloc(2)+dim];
-    cDWRig = [nodeloc(1)+dim,nodeloc(2)+dim];
+    cDWLeft = [nodeloc(1)+dim-1,nodeloc(2)];
+    cUpRig = [nodeloc(1),nodeloc(2)+dim-1];
+    cDWRig = [nodeloc(1)+dim-1,nodeloc(2)+dim-1];
     corners = horzcat(cUpLeft',cDWLeft',cUpRig',cDWRig');
 end

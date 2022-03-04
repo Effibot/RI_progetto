@@ -28,8 +28,8 @@ classdef rectNode<handle
             obj.id=id;
             obj.prop = 'y';
             obj.value = value;
-            obj.father = rectNode.empty();
-            obj.child = rectNode.empty(0,4);
+            obj.father = rectNode.empty(0,1);
+            obj.child = rectNode.empty(0,1);
         end
 
         function setAdj(obj,adj)
@@ -43,6 +43,12 @@ classdef rectNode<handle
         end
         function addChildrenList(obj, nodeList)
             obj.child = nodeList;
+        end
+        function childList = getChildren(obj)
+            childList = obj.child;            
+        end
+        function child = getChild(obj, num)
+            child = obj.child(num);
         end
     end
 end

@@ -14,7 +14,38 @@ robotsize=2;
 %     grid(fix(-r/2)+x-1:fix(r/2)+x+1,fix(-r/2)+y-1:fix(r/2)+y+1)=0;
 % end
 grid = makeMap(obs,dim);
-% figure,imshow(grid);
+%%
+decomp(grid, robotsize, 0.9);
+nodeList = getAllNode(grid, []);
+M = 255 * repmat(uint8(grid.value), 1, 1, 3);
+
+for dim = [32 16 8 4]
+    gridList = findobj(nodeList, 'dim', dim);
+    for i = 1:size(gridList,1)
+        corner = gridList(i).corner;
+        upLeft =  corner(:,1)';
+        dwnLeft = corner(:,2)';
+        upRight = corner(:,3)';
+        dwnRight = corner(:,4)';
+        color=[];
+        switch gridList(i).prop
+            case 'y'
+                color=[255, 160, 0];
+            case 'g'
+                color=[0,255,0];
+            case 'r'
+                color=[255,0,0];
+         end
+        M(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = gridList(i).value;
+        M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color(1);
+                M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color(2);
+        M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color(3);
+
+    end
+%     figure()
+%     imshow(M)
+end
+figure,imshow(M);
 %%
 fun=@(m,s)choice(m,s);
 % grid2bw = imbinarize(grid);
