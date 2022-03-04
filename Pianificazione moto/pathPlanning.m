@@ -2,9 +2,10 @@ clc
 clear
 close all
 %%
-dim=[64,64];
-obs=[10,10,2;39,20,3;8,8,3;30,30,4;40,40,1;21,5,1;10,40,5];
-robotsize=2;
+% set(0,'DefaultFigureWindowStyle','normal');
+dim=[1024,1024];
+obs=[105,100,30;300,400,80;800,78,66;700,150,201;555,777,200;512,512,24;700,200,90;900,900,10];
+robotsize=120;
 % map=ones(dim);
 % for i=1:size(obs,1)
 %     x=obs(i,1);
@@ -14,13 +15,16 @@ robotsize=2;
 %     map(fix(-r/2)+x-1:fix(r/2)+x+1,fix(-r/2)+y-1:fix(r/2)+y+1)=0;
 % end
 map = makeMap(obs,dim);
+figure
+imshow(map.value);
 %%
 decomp(map, robotsize, 0.9);
 nodeList = getAllNode(map, []);
 M = 255 * repmat(uint8(map.value), 1, 1, 3);
-Mtemp = ones(dim);
+Mtemp = map.value;
 currdim = dim(1)/2;
 id = 0;
+figure
 while(currdim >= robotsize)
     mapList = findobj(nodeList, 'dim', currdim);
     for i = 1:size(mapList,1)
@@ -40,73 +44,91 @@ while(currdim >= robotsize)
             case 'r'
                 color=[255,0,0];
         end
-        %         M(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = mapList(i).value;
-        %         imshow(M)
+        M(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = mapList(i).value;
+        %                         imshow(M)
         M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color(1);
-        Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = 0;
-        %         imshow(M)
+%         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = 0;
+        %                         imshow(M)
         M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),2)=color(2);
-        Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
-        %         imshow(M)
+%         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
+        %                         imshow(M)
         M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),3)=color(3);
-        Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
-        %         imshow(M)
+%         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
+        %                         imshow(M)
         M(corner(1,1):corner(1,2),corner(2,1),:)=0;
         Mtemp(corner(1,1):corner(1,2),corner(2,1))=0;
         M(corner(1,1),corner(2,1):corner(2,3),:)=0;
         Mtemp(corner(1,1),corner(2,1):corner(2,3))=0;
-
-        %         if(corner(2,3)==dim(1) && corner(1,2) ~= dim(1))
-        %             M(corner(1,1):corner(1,2),corner(2,3),:)=0;
-        %         elseif(corner(2,3)==dim(1) && corner(1,2) == dim(1))
-        %             M(corner(1,1):corner(1,2),corner(2,3),:)=0;
-        %         elseif(corner(1,2) == dim(1) && corner(1,4) == dim(1) && corner(2,4) == dim(1))
-        %             M(corner(1,2),corner(2,1):corner(2,3),:)=0;
-        %         end
+        %
+        M(corner(1,3):corner(1,4),corner(2,3),:)=0;
+        Mtemp(corner(1,3):corner(1,4),corner(2,3))=0;
+        M(corner(1,2),corner(2,2):corner(2,4),:)=0;
+        Mtemp(corner(1,2),corner(2,2):corner(2,4))=0;
+        %                 if(corner(2,3)==dim(1) && corner(1,2) ~= dim(1))
+        %                     M(corner(1,1):corner(1,2),corner(2,3),:)=0;
+        %                 elseif(corner(2,3)==dim(1) && corner(1,2) == dim(1))
+        %                     M(corner(1,1):corner(1,2),corner(2,3),:)=0;
+        %                 elseif(corner(1,2) == dim(1) && corner(1,4) == dim(1) && corner(2,4) == dim(1))
+        %                     M(corner(1,2),corner(2,1):corner(2,3),:)=0;
+        %                 end
         if corner(2,3)==dim(1)
             M(corner(1,1):corner(1,2),corner(2,3),:)=0;
             Mtemp(corner(1,1):corner(1,2),corner(2,3))=0;
         end
-        if corner(1,2) == dim(1)            
+        if corner(1,2) == dim(1)
             M(corner(1,2),corner(2,1):corner(2,3),:)=0;
             Mtemp(corner(1,2),corner(2,1):corner(2,3))=0;
         end
-%         filename = "mapimage/cell"+num2str(mapList(i).id)+".jpg";
-%         imwrite(M,filename,'jpg');
-%         imshow(M)
+        %         filename = "mapimage/cell"+num2str(mapList(i).id)+".jpg";
+        %         imwrite(M,filename,'jpg');
+        imshow(M)
     end
     currdim = currdim/2;
 end
+% figure
+% imshow(Mtemp);
 %%
 nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
 A = zeros(size(nodeList,2));
 Acomp = zeros(size(nodeList,2));
+
 for node=nodeList
     id = node.id;
     tempList=nodeList(~ismember(nodeList,findobj(nodeList,'id',id)));
     % nodespace = borderLeft, borderTop, borderRight, borderDown
-    nodespace=borderSpace(node);
-%     plot(nodespace(1,:),nodespace(2,:),'g','markersize',5)
-    node.lc
+    nodespace=borderSpace(node,1);
+    %     plot(nodespace(1,:),nodespace(2,:),'g','markersize',5)
     for t = tempList
-        tnodespace=borderSpace(t);
-%         plot(tnodespace(1,:),tnodespace(2,:),'r','markersize',3)
+        tnodespace=borderSpace(t,0);
+        %         plot(tnodespace(1,:),tnodespace(2,:),'r','markersize',3)
         %Left
-        t.lc
         [in, on] = inpolygon(tnodespace(1,:),tnodespace(2,:),nodespace(1,:),nodespace(2,:));
         temp = find(on);
-        minVert = tnodespace(:,min(temp));
-        maxVert = tnodespace(:,max(temp));
-        segDim = abs(minVert - maxVert);
-        segDim = segDim(segDim ~= 0,:);
-        maxSize = min(node.dim,t.dim);
-        if maxSize == segDim
-            node.setAdj(t.id);
-            Acomp(node.id,t.id) = 1;
-            Acomp(t.id,node.id) = 1;
-            if strcmp(node.prop,'r')
-                A(node.id,t.id) = 1;
-                A(t.id,node.id) = 1;
+        if ~isempty(temp)
+            %             %%
+            %             plot(nodespace(1,:),nodespace(2,:))
+            %             axis equal
+            %
+            %             hold on
+            %             plot(tnodespace(1,in),...
+            %                 tnodespace(2,in),'r+') % points inside
+            %             plot(tnodespace(1,~in),...
+            %                 tnodespace(2,~in),'bo') % points outside
+            %             hold off
+            %%
+            minVert = tnodespace(:,min(temp));
+            maxVert = tnodespace(:,max(temp));
+            segDim = abs(minVert - maxVert);
+            segDim = segDim(segDim ~= 0,:);
+            maxSize = min(node.dim,t.dim);
+            if maxSize >= segDim
+                node.setAdj(t.id);
+                Acomp(node.id,t.id) = 1;
+                Acomp(t.id,node.id) = 1;
+                if strcmp(node.prop,'g') && strcmp(t.prop,'g')
+                    A(node.id,t.id) = 1;
+                    A(t.id,node.id) = 1;
+                end
             end
         end
     end
@@ -218,38 +240,38 @@ end
 %     end
 % end
 % %%
-% G = graph(A);
-% %% Plotting graph over image
-% % Plotting node id
-% hold on;
-% for node=nodeList
-%     text(node.bc(2),node.bc(1),int2str(node.id),'HorizontalAlignment','center');
-% end
-% %% Plotting Edges
-% hold on
-% for i=1:size(A,1)
-%     for j=1:size(A,2)
-%         if A(i,j)==1
-%             x1=findobj(nodeList,'id',i);
-%             x2=findobj(nodeList,'id',j);
-%             x1_coord=x1.bc;
-%             x2_coord=x2.bc;
-%             plot([x1_coord(2) x2_coord(2)],[x1_coord(1),x2_coord(1)],'g');
-%         end
-%     end
-% end
+G = graph(A);
+%% Plotting graph over image
+% Plotting node id
+hold on;
+for node=nodeList
+    text(node.bc(2),node.bc(1),int2str(node.id),'HorizontalAlignment','center');
+end
+%% Plotting Edges
+hold on
+for i=1:size(A,1)
+    for j=1:size(A,2)
+        if A(i,j)==1
+            x1=findobj(nodeList,'id',i);
+            x2=findobj(nodeList,'id',j);
+            x1_coord=x1.bc;
+            x2_coord=x2.bc;
+            plot([x1_coord(2) x2_coord(2)],[x1_coord(1),x2_coord(1)],'w','LineWidth',3);
+        end
+    end
+end
 % P=shortestpath(G,7,41);
-% %%
-function r=borderSpace(node)
-    borderLeft = linspace(node.corner(1,1),node.corner(1,2));
-    borderLeft = [node.corner(2,1)*ones(size(borderLeft));borderLeft];
-    borderTop = linspace(node.corner(2,1),node.corner(2,3));
-    borderTop = [borderTop;node.corner(1,1)*ones(size(borderTop))];
-    borderRight = linspace(node.corner(1,3),node.corner(1,4));
-    borderRight = [node.corner(2,3)*ones(size(borderRight));borderRight];
-    borderDown = linspace(node.corner(2,2),node.corner(2,4));
-    borderDown = [borderDown;node.corner(1,4)*ones(size(borderDown))];
-    r = horzcat(borderLeft,borderTop,borderRight,borderDown);
+% %% K per scegliere se mi espando e basta
+function r=borderSpace(node,k)
+borderLeft = linspace(node.corner(1,1)-k,node.corner(1,2)+k);
+borderLeft = [(node.corner(2,1)-k)*ones(size(borderLeft));borderLeft];
+borderTop = linspace(node.corner(2,1)-k,node.corner(2,3)+k);
+borderTop = [borderTop;(node.corner(1,1)-k)*ones(size(borderTop))];
+borderRight = linspace(node.corner(1,3)-k,node.corner(1,4)+k);
+borderRight = [(node.corner(2,3)+k)*ones(size(borderRight));borderRight];
+borderDown = linspace(node.corner(2,2)-k,node.corner(2,4)+k);
+borderDown = [borderDown;(node.corner(1,4)+k)*ones(size(borderDown))];
+r = horzcat(borderLeft,borderTop,borderRight,borderDown);
 end
 
 

@@ -84,6 +84,7 @@ function bc = getBc(nodeloc, dim)
     bc = nodeloc+dim/2;
 end
 function corners = getCorners(nodeloc, dim)
+
     cUpLeft = [nodeloc(1),nodeloc(2)];
     cDWLeft = [nodeloc(1)+dim-1,nodeloc(2)];
     cUpRig = [nodeloc(1),nodeloc(2)+dim-1];
