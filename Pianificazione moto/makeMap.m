@@ -12,7 +12,7 @@ function node = makeMap(obstacleList, dim)
     end
     bc = dim/2;
     lc = [1 1];
-    corner = [[1 1];[1 dim(1)];[dim(1) 1];[dim(1) dim(1)]];
+    corner = [[1;1],[1;dim(1)],[dim(1);1],[dim(1);dim(1)]];
     id = 1;
     value = img;
     father = 'root';   

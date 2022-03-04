@@ -87,12 +87,10 @@ for node=nodeList
     % nodespace = borderLeft, borderTop, borderRight, borderDown
     nodespace=borderSpace(node);
 %     plot(nodespace(1,:),nodespace(2,:),'g','markersize',5)
-    node.lc
     for t = tempList
         tnodespace=borderSpace(t);
 %         plot(tnodespace(1,:),tnodespace(2,:),'r','markersize',3)
         %Left
-        t.lc
         [in, on] = inpolygon(tnodespace(1,:),tnodespace(2,:),nodespace(1,:),nodespace(2,:));
         temp = find(on);
         minVert = tnodespace(:,min(temp));
