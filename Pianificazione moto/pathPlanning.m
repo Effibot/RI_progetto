@@ -5,7 +5,7 @@ close all
 % set(0,'DefaultFigureWindowStyle','normal');
 dim=[1024,1024];
 obs=[105,100,30;300,400,80;800,78,66;700,150,201;555,777,200;512,512,24;700,200,90;900,900,10];
-robotsize=120;
+robotsize=48;
 % map=ones(dim);
 % for i=1:size(obs,1)
 %     x=obs(i,1);
@@ -15,8 +15,8 @@ robotsize=120;
 %     map(fix(-r/2)+x-1:fix(r/2)+x+1,fix(-r/2)+y-1:fix(r/2)+y+1)=0;
 % end
 map = makeMap(obs,dim);
-figure
-imshow(map.value);
+% figure
+% imshow(map.value);
 %%
 decomp(map, robotsize, 0.9);
 nodeList = getAllNode(map, []);
@@ -24,7 +24,7 @@ M = 255 * repmat(uint8(map.value), 1, 1, 3);
 Mtemp = map.value;
 currdim = dim(1)/2;
 id = 0;
-figure
+% figure
 while(currdim >= robotsize)
     mapList = findobj(nodeList, 'dim', currdim);
     for i = 1:size(mapList,1)
@@ -81,12 +81,12 @@ while(currdim >= robotsize)
         end
         %         filename = "mapimage/cell"+num2str(mapList(i).id)+".jpg";
         %         imwrite(M,filename,'jpg');
-        imshow(M)
+%         imshow(M)
     end
     currdim = currdim/2;
 end
-% figure
-% imshow(Mtemp);
+figure
+imshow(M);
 %%
 nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
 A = zeros(size(nodeList,2));
@@ -260,7 +260,12 @@ for i=1:size(A,1)
         end
     end
 end
-% P=shortestpath(G,7,41);
+
+%% Calculating trajectory
+% s=60,t1=64,t2=85,t3=42
+P=shortestpath(G,60,64);
+trajectory=makePath(P,nodeList);
+%%
 % %% K per scegliere se mi espando e basta
 function r=borderSpace(node,k)
 borderLeft = linspace(node.corner(1,1)-k,node.corner(1,2)+k);
