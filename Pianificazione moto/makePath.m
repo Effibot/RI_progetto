@@ -17,69 +17,68 @@ tbc=[0,1];
 t=0:0.1:1;
 xbc=[nPoints(1,2),nPoints(2,2),0,0];
 ybc=[nPoints(1,1),nPoints(2,1),0,0];
-ybc = [];
-% [x]=splineEq(xbc(1),xbc(2),xbc(3),xbc(4),tbc);
-% [y]=splineEq(ybc(1),ybc(2),ybc(3),ybc(4),tbc);
-% 
-% % plot spline
-% 
-% figure
-% hold on
-% xx=double(subs(x,t));
-% yy=double(subs(y,t));
-% plot(t,xx);
-% plot(tbc,[xbc(1),xbc(2)],'or')
-% title('x vs. t for Cubic Spline Equation')
-% %Grafico (y,t)
-% figure
-% hold on
-% plot(t,yy);
-% plot(tbc,[ybc(1),ybc(2)],'or');
-% title('y vs. t for Cubic Spline Equation')
-% 
-% figure
-% plot(xx,yy,xbc,ybc,'or');
-% title('y vs. x for Cubic Spline Equation')
+[x]=splineEq(xbc(1),xbc(2),xbc(3),xbc(4),tbc);
+[y]=splineEq(ybc(1),ybc(2),ybc(3),ybc(4),tbc);
+
+% plot spline
+
+figure
+hold on
+xx=double(subs(x,t));
+yy=double(subs(y,t));
+plot(t,xx);
+plot(tbc,[xbc(1),xbc(2)],'or')
+title('x vs. t for Cubic Spline Equation')
+%Grafico (y,t)
+figure
+hold on
+plot(t,yy);
+plot(tbc,[ybc(1),ybc(2)],'or');
+title('y vs. t for Cubic Spline Equation')
+
+figure
+plot(xx,yy,xbc,ybc,'or');
+title('y vs. x for Cubic Spline Equation')
 
 %% N-Point Spline
-y=flipud(nPoints(:,1));
-x=nPoints(:,2);
-% plot(x,y,x,y,'o');
-% title('Waypoints for N-Point example');
-% Instead, we need to introduce an independent variable that is always
-% monotonically increasing, like time!
-t=0:1:size(y,1)-1;
+% y=flipud(nPoints(:,1));
+% x=nPoints(:,2);
+% % plot(x,y,x,y,'o');
+% % title('Waypoints for N-Point example');
+% % Instead, we need to introduce an independent variable that is always
+% % monotonically increasing, like time!
+% t=0:1:size(y,1)-1;
+% % figure;
+% % plot(t,x,t,x,'o');
+% % title('x vs. t');
+% % 
+% % figure;
+% % plot(t,y,t,y,'o');
+% % title('y vs. t');
+% % 
+% % figure;
+% % plot(x,y,x,y,'o');
+% % title('y vs. x');
+% %Spline Waypoints
+% tq = 0:0.1:size(y,1)-1;
+% slope0 = 0;
+% slopeF = 0;
+% xq = spline(t,[slope0; x; slopeF],tq);
+% yq = spline(t,[slope0; y; slopeF],tq);
+% 
+% % plot spline in t-x, t-y and x-y space
 % figure;
-% plot(t,x,t,x,'o');
+% plot(t,x,'o',tq,xq,':.');
 % title('x vs. t');
 % 
 % figure;
-% plot(t,y,t,y,'o');
+% plot(t,y,'o',tq,yq,':.');
 % title('y vs. t');
 % 
 % figure;
-% plot(x,y,x,y,'o');
+% plot(x,y,'o',xq,yq,':.');
 % title('y vs. x');
-%Spline Waypoints
-tq = 0:0.1:size(y,1)-1;
-slope0 = 0;
-slopeF = 0;
-xq = spline(t,[slope0; x; slopeF],tq);
-yq = spline(t,[slope0; y; slopeF],tq);
-
-% plot spline in t-x, t-y and x-y space
-figure;
-plot(t,x,'o',tq,xq,':.');
-title('x vs. t');
-
-figure;
-plot(t,y,'o',tq,yq,':.');
-title('y vs. t');
-
-figure;
-plot(x,y,'o',xq,yq,':.');
-title('y vs. x');
-axis([0 1000 0 1000])
+% axis([0 1000 0 1000])
 end
 
 function [x,y]=splineEq(x0,xf,slope0,slopef,tbc)
@@ -121,7 +120,7 @@ yyy = a(1)+a(2)*x+a(3)*x.^2+a(4)*x.^3;
 x=a(1)+a(2)*t+a(3)*t.^2+a(4)*t.^3;
 
 
-% %y
+% % %y
 % y=a0+a1*t+a2*t^2+a3*t^3;
 % ydot =a1+2*a2*t+3*a3*t^2;
 % % Boundary Conditions [C]*[a0;a1;a2;a3]=bc

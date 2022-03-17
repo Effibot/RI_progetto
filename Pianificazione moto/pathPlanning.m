@@ -119,7 +119,7 @@ for node=nodeList
     end
 end
 %%
-figure,imshow(M);
+% figure,imshow(M);
 G = graph(A);
 Aint=zeros([size(A),2]);
 %% Plotting graph over image
@@ -166,22 +166,23 @@ end
 
 vec(vec(:,:)==0) = [] ;
 vec = reshape(vec,4,2);
-n1 = findobj(nodeList, 'id', 60);
-n2 = findobj(nodeList, 'id',59);
+% n1 = findobj(nodeList, 'id', 60);
+% n2 = findobj(nodeList, 'id',59);
+% 
+% cpts = [n1.bc(2), n1.bc(2)+1,vec(1,1), n2.bc(2);...
+%     n1.bc(1),n1.bc(1)+1,vec(1,2), n2.bc(2)];
+% tpts = [0 3];
+% tvec = 0:0.01:3;
+% [q, qd, qdd, pp] = bsplinepolytraj(cpts,tpts,tvec);
+% figure
+% plot(cpts(1,:),cpts(2,:),'xb-')
+% hold all
+% plot(q(1,:), q(2,:))
+% xlabel('X')
+% ylabel('Y')
+% hold off
 
-cpts = [n1.bc(2), n1.bc(2)+1,vec(1,1), n2.bc(2);...
-    n1.bc(1),n1.bc(1)+1,vec(1,2), n2.bc(2)];
-tpts = [0 3];
-tvec = 0:0.01:3;
-[q, qd, qdd, pp] = bsplinepolytraj(cpts,tpts,tvec);
-figure
-plot(cpts(1,:),cpts(2,:),'xb-')
-hold all
-plot(q(1,:), q(2,:))
-xlabel('X')
-ylabel('Y')
-hold off
-% trajectory=makePath(P,nodeList);
+trajectory=makePath(P,nodeList);
 %%
 % syms x y x0 y0 x1 y1
 % % y = @(x0,y0,x1,y1) -(y1-y0)/(x1-x0)*(x-x0)+y0;
