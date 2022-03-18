@@ -124,12 +124,12 @@ G = graph(A);
 Aint=zeros([size(A),2]);
 %% Plotting graph over image
 % Plotting node id
-hold on;
-for node=nodeList
-    text(node.bc(2),node.bc(1),int2str(node.id),'HorizontalAlignment','center');
-end
+% hold on;
+% for node=nodeList
+%     text(node.bc(2),node.bc(1),int2str(node.id),'HorizontalAlignment','center');
+% end
 %% Plotting Edges
-hold on
+% hold on
 for i=1:size(A,1)
     for j=1:size(A,2)
         if A(i,j)==1
@@ -142,11 +142,11 @@ for i=1:size(A,1)
             xbox = xlimit([1 1 2 2 1]);
             ybox = ylimit([1 2 2 1 1]);
             [xi,yi] = polyxpoly([x2.bc(2) x1.bc(2)],[x2.bc(1) x1.bc(1)],xbox,ybox);
-            Aint(i,j,:)=[xi,yi];
-            plot(xi,...
-                yi,'bo','MarkerSize',10) % points outside
-            hold on
-            plot([x1_coord(2) x2_coord(2)],[x1_coord(1),x2_coord(1)],'w','LineWidth',2);
+            Aint(i,j,:)=[yi,xi];
+%             plot(xi,...
+%                 yi,'bo','MarkerSize',10) % points outside
+%             hold on
+%             plot([x1_coord(2) x2_coord(2)],[x1_coord(1),x2_coord(1)],'w','LineWidth',2);
 
         end
     end
@@ -155,17 +155,17 @@ end
 %% Calculating trajectory
 % s=60,t1=64,t2=85,t3=42
 P=shortestpath(G,60,144);
-Pc = P;
-vec = [];
-for p = P
-    Pc(ismember(Pc,p)) = [];
-    for pp = Pc
-        vec = vertcat(vec,[Aint(p,pp,1),Aint(p,pp,2)]);
-    end
-end
-
-vec(vec(:,:)==0) = [] ;
-vec = reshape(vec,4,2);
+% Pc = P;
+% vec = [];
+% for p = P
+%     Pc(ismember(Pc,p)) = [];
+%     for pp = Pc
+%         vec = vertcat(vec,[Aint(p,pp,1),Aint(p,pp,2)]);
+%     end
+% end
+% 
+% vec(vec(:,:)==0) = [] ;
+% vec = reshape(vec,4,2);
 % n1 = findobj(nodeList, 'id', 60);
 % n2 = findobj(nodeList, 'id',59);
 % 
@@ -182,7 +182,7 @@ vec = reshape(vec,4,2);
 % ylabel('Y')
 % hold off
 
-trajectory=makePath(P,nodeList);
+trajectory=pathfind(nodeList, P, Aint);
 %%
 % syms x y x0 y0 x1 y1
 % % y = @(x0,y0,x1,y1) -(y1-y0)/(x1-x0)*(x-x0)+y0;
