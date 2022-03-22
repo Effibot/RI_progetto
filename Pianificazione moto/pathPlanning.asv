@@ -164,7 +164,6 @@ points = pathfind(nodeList, P, Aint, false);
 %     f(j,:) = polyval(coefs(j,:), time - breaks(j));
 % end
 pp = cscvn([points(:,1)';points(:,2)']);
-fnplt(pp,'b')
 dppx = fnder(trajectory(1));
 dppy = fnder(trajectory(2));
 % J = fndir(pp, eye(2))
