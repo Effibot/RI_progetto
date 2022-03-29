@@ -1,17 +1,19 @@
-function curve = pathfind(nodeList, idList, Aint, pp)
+function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
     % nodeList: lista di nodi che compongono il path
     % Aint: matrice n x n x 2 di componenti [x,y]
     % costruisco sequenza di punti in cui far passare il path
     dimPath = size(idList,2);
-    nPoints=double.empty(0,2);
+    nPoints = double.empty(0,2);
     for i = 1:dimPath -1
-        node = findobj(nodeList,'id', idList(i));
+        node = findobj(nodeList, 'id', idList(i));
         next = findobj(nodeList, 'id', idList(i+1));
         if (~isempty(node) || ~isempty(next))
             if isempty(ismember(nPoints,node.bc,'rows'))
                 nPoints(end+1,:) = node.bc;
             end
-            nPoints(end+1,:) = Aint(node.id,next.id,:);
+            %             nPoints(end+1,:) = Amid(node.id,next.id,:);
+            %             nPoints(end+1,:) = Aint(node.id,next.id,:);
+            nPoints(end+1,:) = selectPoint(node, next, Amid, Aint, robotSize, obsList);
             nPoints(end+1,:) = next.bc;
         end
     end
@@ -45,8 +47,8 @@ function curve = pathfind(nodeList, idList, Aint, pp)
     tq = t(1):1/k:t(end);   % symtime
     % makima permette di creare curve di tipo C1
     if pp
-        curvex = makima(t,nPoints(:,2));
-        curvey = makima(t,nPoints(:,1));
+        curvex = spline(t,nPoints(:,2));
+        curvey = spline(t,nPoints(:,1));
     else
         curvex = spline(t,nPoints(:,2),tq);
         curvey = spline(t,nPoints(:,1),tq);
@@ -65,3 +67,28 @@ function curve = pathfind(nodeList, idList, Aint, pp)
     %     title('x vs y')
 
 end
+
+function point = selectPoint(node, next, Amid, Aint, robotSize, obsList)
+    %     if size(node.value,1) > robotSize && ...
+    %             size(next.value,1) > robotSize
+    %         point = Aint(node.id, next.id,:);
+    %     else
+    %         point = Amid(node.id, next.id,:);
+    %     end
+    pointInt = Aint(node.id, next.id,:);
+    pointMid = Amid(node.id, next.id,:);
+
+    [closestObstInt, minDistInt] = findClosestObs(obsList, pointInt);
+    [closestObstMid, minDistMid] = findClosestObs(obsList, pointMid);
+
+    if isequal(closestObstMid, closestObstInt)
+        if minDistInt >= minDistMid
+            point = pointInt;
+        else
+            point = pointMid;
+        end
+    else
+        point = (pointInt+pointMid)/2;
+    end
+end
+
