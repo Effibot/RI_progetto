@@ -47,47 +47,7 @@ function decomp(node, minDim, thresh)
         end
     end
 end
-function newGrid = getGrid(grid, dim, num)
-    % make a copy of a node's map starting from the upper left corner
-    % We use clockwise notation to enumerate the children.
-    % for border consistency we consider only the top and left
-    % borders.
-    switch num
-        case 1
-            newGrid = grid(1:dim,1:dim);
-        case 2
-            newGrid = grid(1:dim,dim+1:end);
-        case 3
-            newGrid = grid(dim+1:end,dim+1:end);
-        case 4
-            newGrid = grid(dim+1:end,1:dim);
 
-    end
-end
-function lc = getLc(fatherlc, dim, num)
-    % returns the upper left corner point relative position.
-    % the starting point is the upper left of the main grid.
-    switch (num)
-        case 1
-            lc = fatherlc;
-        case 2
-            lc = [fatherlc(1) fatherlc(2)+dim];
-        case 3
-            lc = fatherlc + dim;
-        case 4
-            lc = [fatherlc(1)+dim fatherlc(2)];
-    end
-end
-function bc = getBc(nodeloc, dim)
-    % compute the center of mass of grid from its upper left corner
-    % point and the dimension of the square that describes.
-    bc = nodeloc+dim/2;
-end
-function corners = getCorners(nodeloc, dim)
 
-    cUpLeft = [nodeloc(1),nodeloc(2)];
-    cDWLeft = [nodeloc(1)+dim-1,nodeloc(2)];
-    cUpRig = [nodeloc(1),nodeloc(2)+dim-1];
-    cDWRig = [nodeloc(1)+dim-1,nodeloc(2)+dim-1];
-    corners = horzcat(cUpLeft',cDWLeft',cUpRig',cDWRig');
-end
+
+
