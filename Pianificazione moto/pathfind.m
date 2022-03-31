@@ -75,8 +75,8 @@ function point = selectPoint(node, next, Amid, Aint, robotSize, obsList)
     %     else
     %         point = Amid(node.id, next.id,:);
     %     end
-    pointInt = Aint(node.id, next.id,:);
-    pointMid = Amid(node.id, next.id,:);
+    pointInt = [Aint(node.id, next.id,1), Aint(node.id, next.id,2)];
+    pointMid = [Amid(node.id, next.id,1), Amid(node.id, next.id,2)];
 
     [closestObstInt, minDistInt] = findClosestObs(obsList, pointInt);
     [closestObstMid, minDistMid] = findClosestObs(obsList, pointMid);
