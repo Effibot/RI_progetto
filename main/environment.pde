@@ -11,8 +11,10 @@ float angoloX=0;
 float angoloY=0;
 float angoloXp=0;
 float angoloYp=0;
-
+float targetX;
+float targetY;
 float targetR = 20;
+float border = 20;
 
 
 void camera_setup() {
@@ -74,29 +76,29 @@ void room() {
     show_axes(true);
 
 }
-float border = 20;
 void roomSetup() {
     pushMatrix();
     translate(floorWidth/2+border,floorWidth/2+border,0);
     fill(155);
-    //box(floorWidth, floorHeight, floorDepth);
+    box(floorWidth, floorHeight, floorDepth);
           drawObstacle(obsList);
 
     target();  
     popMatrix();
 }
 void mousePressed() {
-angoloYp=angoloY+PI*mouseX/10000.0;
-angoloXp=angoloX+PI*radians(mouseY/10000.0);
- obsList.add(new Obstacle(mouseX , mouseY , 0.0, targetR, 1.0));
+  angoloYp=angoloY+PI*mouseX/10000.0;
+  angoloXp=angoloX+PI*radians(mouseY/10000.0);
+  if(targetColor == color(0,255,0,targetAlpha)){
+    obsList.add(new Obstacle(mouseX , mouseY , 0.0, targetR, 1.0));
+  }
 }
 
 
-    float targetX;
-    float targetY;
+
 void target(){
-    targetX = mouseX - floorWidth/2;
-    targetY = mouseY - floorHeight/2;
+    targetX = mouseX - floorWidth/2 - targetR;
+    targetY = mouseY - floorHeight/2 - targetR;
     pushMatrix();
     translate(targetX,targetY,floorDepth+1);
     targetColorSelect(targetAlpha);
@@ -126,9 +128,7 @@ void mouseWheel(MouseEvent event) {
   fov += e/abs(e)*radians(0.5);
 }
 
-void cylinder(float xc, float yc, float zc, float bottom, float top, float h, int sides)
-{
-
+void cylinder(float xc, float yc, float zc, float bottom, float top, float h, int sides){
   pushMatrix();
   rotateX(PI/2);
   //translate(xc,yc,zc);
@@ -188,13 +188,14 @@ void cylinder(float xc, float yc, float zc, float bottom, float top, float h, in
   
   popMatrix();
 }
+
 public void drawObstacle(ArrayList<Obstacle> obsList){
   if (!obsList.isEmpty()){
     for (Obstacle obs : obsList){
       pushMatrix();
       //translate(x,y,floorDepth);    
       translate(obs.xc-modelX(0,0,0),obs.yc-modelY(0,0,0),floorDepth+1);
-
+      fill(150,200,100);
       cylinder(0,0,0,obs.r,obs.r,obs.h,obs.sides);
       println(obs.toString()+"\nSize: "+obsList.size());
       popMatrix();
