@@ -1,3 +1,5 @@
+import g4p_controls.*;
+import java.awt.*;
 /*Global variables for window configuration*/
 PShape s1,s2,s3,s4,s5,s6;
 int viewWidth = 1920; 
@@ -27,6 +29,15 @@ size(viewWidth, viewHeight, P3D);
 void setup() {
 background(bgColor);
 noFill();
+createGUI();
+panel1.setFont(new Font("Monospaced", Font.PLAIN, 15));
+
+label1.setFont(new Font("Monospaced", Font.PLAIN, 20));
+label2.setFont(new Font("Monospaced", Font.PLAIN, 20));
+label3.setFont(new Font("Monospaced", Font.PLAIN, 20));
+label4.setFont(new Font("Monospaced", Font.PLAIN, 20));
+start_btn.setFont(new Font("Monospaced", Font.PLAIN, 20));
+
 
 /*Shapes loading*/
 /*s1 = loadShape("models/Link4.obj");-
@@ -54,9 +65,12 @@ background(bgColor);
 //translate(0,y,0);
 
 if (play) {
+  panel1.setVisible(false);
     camera_setup();
 room();
 robot.drawLink(robot,x,y);
+  panel1.setCollapsed(true);
+
 } else {
     roomSetup();
 

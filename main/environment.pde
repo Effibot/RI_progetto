@@ -13,9 +13,9 @@ float angoloXp=0;
 float angoloYp=0;
 float targetX;
 float targetY;
-float targetR = 20;
+float targetR = 0;
 float border = 20;
-
+int obsId = 1;
 
 void camera_setup() {
     //perspective(fov, float(width) / float(height),cameraZ / 10.0, cameraZ * 10.0);
@@ -71,48 +71,63 @@ void room() {
     box(floorDepth, floorWidth - floorDepth, floorHeight);
     popMatrix();
     popMatrix();
+    show_axes(true);
+    
+    for (Obstacle obs : obsList){
+      pushMatrix();
+      fill(255,0,0);
+      translate(obs.xc-floorWidth/2,obs.yc-floorWidth/2,obs.zc-floorHeight/2+floorDepth/2+(25+14)*0.2);
+      cylinder(0,0,0,obs.r,obs.r,100,obs.sides);
 
+      popMatrix();
+    }
     translate(floorWidth/2,floorWidth/2-floorDepth/2,-floorHeight/2+floorDepth/2+(25+14)*0.2);
     show_axes(true);
-
 }
 void roomSetup() {
     pushMatrix();
     translate(floorWidth/2+border,floorWidth/2+border,0);
     fill(155);
     box(floorWidth, floorHeight, floorDepth);
-          drawObstacle(obsList);
+        popMatrix();
 
     target();  
-    popMatrix();
+              drawObstacle(obsList);
+
 }
 void mousePressed() {
   angoloYp=angoloY+PI*mouseX/10000.0;
   angoloXp=angoloX+PI*radians(mouseY/10000.0);
-  if(targetColor == color(0,255,0,targetAlpha)){
-    obsList.add(new Obstacle(mouseX , mouseY , 0.0, targetR, 1.0));
+  if(isDrawable()){
+    obsList.add(new Obstacle(mouseX , mouseY , 0.0, targetR, 1.0, obsId));
+    obsId += 1;
   }
 }
 
-
+boolean isDrawable(){
+  return (mouseX + targetR < floorWidth + border) && (mouseX - targetR > border) &&
+     (mouseY + targetR < floorHeight + border ) && (mouseY - targetR > border);
+}
 
 void target(){
-    targetX = mouseX - floorWidth/2 - targetR;
-    targetY = mouseY - floorHeight/2 - targetR;
+    targetR = obs_ray_slider.getValueF();
+    targetX = mouseX - floorWidth/2-border-targetR/2;
+    targetY = mouseY - floorHeight/2-border-targetR/2;
     pushMatrix();
-    translate(targetX,targetY,floorDepth+1);
+    translate(mouseX,mouseY,floorDepth+1);
     targetColorSelect(targetAlpha);
     fill(targetColor);
     noStroke();
-    cylinder(targetX,targetY,0,targetR,0.0,1.1,30);
+    if(isDrawable()){
+    cylinder(mouseX,mouseY,0,targetR,0.0,1.1,30);
+    }
     popMatrix();
 }
 color targetColor;
 float targetAlpha = 80;
 void targetColorSelect(float targetAlpha){
     
-    if ((targetX < floorWidth/2 - targetR) && (targetX > targetR  - floorWidth/2) &&
-     (targetY < floorHeight/2 - targetR) && (targetY > targetR - floorHeight/2)) {
+    if(isDrawable()) {
         targetColor =  color(0,255,0,targetAlpha);
     } else {
         targetColor =  color(255,0,0,targetAlpha);
@@ -197,9 +212,7 @@ public void drawObstacle(ArrayList<Obstacle> obsList){
       translate(obs.xc-modelX(0,0,0),obs.yc-modelY(0,0,0),floorDepth+1);
       fill(150,200,100);
       cylinder(0,0,0,obs.r,obs.r,obs.h,obs.sides);
-      println(obs.toString()+"\nSize: "+obsList.size());
       popMatrix();
     }
   }
 }
-
