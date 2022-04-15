@@ -47,11 +47,11 @@ function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
     tq = t(1):1/k:t(end);   % symtime
     % makima permette di creare curve di tipo C1
     if pp
-        curvex = spline(t,nPoints(:,2));
-        curvey = spline(t,nPoints(:,1));
+        curvex = makima(t,nPoints(:,2));
+        curvey = makima(t,nPoints(:,1));
     else
-        curvex = spline(t,nPoints(:,2),tq);
-        curvey = spline(t,nPoints(:,1),tq);
+        curvex = makima(t,nPoints(:,2),tq);
+        curvey = makima(t,nPoints(:,1),tq);
     end
     curve = [curvex',curvey'];
     %% plot section
