@@ -8,9 +8,12 @@ dim=[1024,1024];
 robotsize = 48;
 numObst = 10;
 % rng('default');
-obs = maprng(dim(1),dim(2), numObst);
-map = makeMap(obs,dim);
-% load map.mat
+% obs = maprng(dim(1),dim(2), numObst);
+% map = makeMap(obs,dim);
+% save map.mat
+% save obs.mat
+load map.mat 
+load obs.mat
 % figure
 imshow(map.value);
 %% QT-Decomp
@@ -34,7 +37,8 @@ startId = idList(randi(size(idList,2)));
 tempList = idList;
 tempList(ismember(idList,startId)) = [];
 rbclist = getbcprop(nodeList, 'r');
-circleColor = [0.0 1.0 1.0 0.5];
+circleColor = [0.0, 1.0, 1.0, 0.5];
+circleColorObs=[0.623, 0.501, 0.635, 0.5];
 robotColor = [1 1 0 0.7];
 for i = 1:5
     endId = idList(randi(size(idList,2)));
@@ -49,13 +53,26 @@ for i = 1:5
     for j = 1:fix(size(points,1)/100):size(points,1)
         currPoint = points(j,:);
         [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
-        h = circle(currPoint(1), currPoint(2), minDist, circleColor);
+        obsNode= findobj(nodeList,'bc',closestObs);
+        radiusObs=sqrt(2)/2*obsNode.dim;
+        radiusRobot=minDist-radiusObs;
+        if radiusRobot>=robotsize/2
+            circleColor = [0.0, 1.0, 1.0, 0.5];
+        else
+            circleColor = [0.780, 0, 0.050];
+
+        end
+        h = circle(currPoint(1), currPoint(2), radiusRobot, circleColor);
+
+        hobs = circle(closestObs(2), closestObs(1), radiusObs, circleColorObs);
+
         robot = circle(currPoint(1), currPoint(2), robotsize/2, robotColor);
         ll = line([currPoint(1), closestObs(2)],...
             [currPoint(2), closestObs(1)],...
             'Color','#ca64ea','LineStyle','-.','LineWidth',3);
         pause()
         delete(h);
+        delete(hobs);
         delete(robot)
         delete(ll);
     end
