@@ -1,7 +1,8 @@
 import processing.svg.*; //<>// //<>//
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Arrays.*;
 UDPconnect udp;
 float obsTarget=1;
 ArrayList<String> params;
@@ -31,7 +32,20 @@ float q1v = 0.0;
 float q2v = 0.0;
 float q3v = 0.0;
 float[] eq= {q1v,q2v,q3v};
-
+//Path Planning
+float[] mapSize={1024,1024};
+float robotSize=48;
+List<List<Float>> obsList=List.of(
+List.of(805.0,  844.0,  180.0),
+List.of(264.0,  280.0,  132.0),
+List.of(440.0,  636.0,  191.0),
+List.of(673.0,  788.0,  236.0),
+List.of(792.0,  792.0,  232.0),
+List.of(818.0,  656.0,  206.0),
+List.of(574.0,  911.0,  9.03),
+List.of(689.0,  493.0,  222.0),
+List.of(737.0,  779.0,  208.0),
+List.of(633.0,  862.0,  162.0));
 // guadagno della legge di controllo proporzionale
 float K = 0.05;
 
@@ -149,6 +163,21 @@ void visione(float... params) {
   while(udp.bc==new float[2]){}
   udp.sendData(getFloats(data));
 }
+
+void pathPlanning(float proc, float mapSizeX,float mapSizeY,float robotSize,List<List<Float>> obs){//3,mapSize[1],mapSize[2],robotSize,obsList
+  List<Float> data = new ArrayList<>();
+  List<Float> flat = 
+    obs.stream()
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  data.add(proc);
+  data.add(mapSizeX);
+  data.add(mapSizeY);
+  data.add(robotSize);
+  flat.forEach((x) -> data.add(x));
+  udp.sendData(getFloats(data));
+}
+
 void mousePressed() {
   x = mouseX - width / 2;
   y = mouseY - height / 2;
@@ -161,6 +190,9 @@ void keyPressed(){
   }
   if(keyCode=='2'){
     visione(2,x,y,obsTarget);
+  }
+  if(keyCode=='3'){
+    pathPlanning(3,mapSize[0],mapSize[1],robotSize,obsList);
   }
 }
 
