@@ -32,7 +32,7 @@ filename = 'Immagini/horizontalCalcShadow.jpg';
 % filename = 'Immagini/controller.jpg';
 % filename = 'Immagini/QuadratoRosso.jpg';
 imgRGB = imread(filename);  % Caricamente Immagine
-imgRGB=imnoise(imgRGB,'salt & pepper',0.5);
+% imgRGB=imnoise(imgRGB,'salt & pepper',0.5);
 %% Pre-Processamento: Compressione dell'immagine
 
 % Per mantenere un rapporto di grandezze tra l'aspetto dell'immagine in
