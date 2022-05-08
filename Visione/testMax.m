@@ -33,7 +33,7 @@ filename = 'Immagini/rotateCalcW.jpg';
 % filename = 'Immagini/QuadratoRosso.jpg';
 imgRGB = imread(filename);  % Caricamente Immagine
 rng('default')
-imgRGB=imnoise(imgRGB,'salt & pepper',0.7);
+imgRGB=imnoise(imgRGB,'salt & pepper',0.1);
 
 %% Pre-Processamento: Compressione dell'immagine
 
@@ -158,20 +158,14 @@ maxRadon = max(R1);
 
 figure
 plot(theta, maxRadon);
-%%
-phaseMask = islocalmax(R1, 1);
-R1mask = R1.*phaseMask;
-distMask = islocalmax(R1mask,2,'MinSeparation',30);
-R1mask = R1mask.*distMask;
-figure
-plot(theta,max(R1mask))
+
 %% Determino il massimo per identificare il punto più alto della
 % proiezione con altezza maggiore.
 % [pk, locs] = findpeaks() identifica il massimo locale del vettore dato in
 % ingresso e l'indice di quel valore all'interno del vettore.
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
-figure
+% figure
 angleSum = 180*numLati-360;
 hold on
 
@@ -184,9 +178,10 @@ hold on
 % plot(theta1, maxRadon2, 'r');
 % figure
 % hold on
-[pk, locs] = findpeaks(maxRadon,'SortStr','descend','Annotate','extents',...
-    'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25);
-plot(locs, pk,'ob') 
+[pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
+    'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25,'Threshold',1e-4);
+locs = locs - 1;
+plot(locs, pk ,'or') 
 grid on
 [M, idM] = max(pk);
 % locs2 = locs2 +locs(idM);

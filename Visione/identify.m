@@ -7,7 +7,7 @@
 clearvars
 close all
 clc
-syms x diag1(x) diag2(x)
+syms x diag_i(x) y
 syms rect(x,x0,y0,x1,y1)
 rect(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
 
@@ -89,9 +89,6 @@ mask1=strel('square',10);
 % imclose() applica operatori morfologici su immagini in b/n  o greyscale
 imgBW3 = imclose(imgBW2, mask);
 imgBW3 = imopen(imgBW3, mask1);
-%% Graficare tutte le proiezioni dell'immagine
-% Graficando il massimo in funzione dell'angolo
-
 
 %% Eliminazione "buchi" dall'immagine
 % permette di eliminare artefatti grafici simili a riflessi sulla
@@ -106,7 +103,7 @@ imgBW4 = imfill(imgBW3, 'holes');
 [B, L] = bwboundaries(imgBW4, 'noholes');
 % regionprops() calcola il valore effettivo di perimetro ed area.
 % Salvo il risultato in un oggetto.
-props = regionprops(L, 'Area', 'Perimeter');
+props = regionprops(L, 'Area', 'Perimeter','PixelList');
 % Salvo Area e Perimetro di tutti gli oggetti identificati come lista.
 areas = [props.Area];
 perims = [props.Perimeter];
@@ -153,6 +150,8 @@ theta = 0:179;
 
 % Determino la proiezione con altezza maggiore per determinare la diagonale
 maxRadon = max(R1);
+%% Graficare tutte le proiezioni dell'immagine
+% Graficando il massimo in funzione dell'angolo
 
 %% Determino il massimo per identificare il punto più alto della
 % proiezione con altezza maggiore.
@@ -160,64 +159,39 @@ maxRadon = max(R1);
 % ingresso e l'indice di quel valore all'interno del vettore.
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
-[pk, locs] = findpeaks(maxRadon, 'SortStr', 'descend', 'NPeaks', 3);
-
+[pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
+    'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25,'Threshold',1e-4);
+locs = locs - 1; % offset per plottare i dati
 % Trovo angolo in radianti il cui indice corrisponde all'elemento di una
 % delle colonne di R il cui valore è pari al picco individuato da pk
-theta1 = locs(1);
-offset1 = xp1(R1(:, locs(1)) == pk(1));
-theta2 = locs(2);
-offset2 = xp1(R1(:, locs(2)) == pk(2));
-
-% Determino le diagonali
-if (objShape=="Triangolo")
-    theta3 = locs(3);
-    offset3 = xp1(R1(:, locs(3)) == pk(3));
-    diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
-    diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2);
-    diag3(x) = tand(theta3 + 90) * ( x - offset3*cosd(theta3) ) + offset3*sind(theta3);
-    
-    % trovo vertici del triangolo
-    x_1 = solve(diag1 == diag2);    % rossa con verde
-    y_1 = diag1(x_1);
-    x_2 = solve(diag2 == diag3);    % ciano con verde
-    y_2 = diag2(x_2);
-    x_3 = solve(diag1 == diag3);    % rossa con ciano
-    y_3 = diag1(x_3);
-    % trovo punti medi
-    xm1 = (x_1+x_3)/2;  % rosso
-    ym1 =  (y_1+y_3)/2;
-    xm2 =(x_1+x_2)/2;   % verde
-    ym2 = (y_1+y_2)/2;
-    xm3 =(x_2+x_3)/2;   % ciano
-    ym3 =(y_2+y_3)/2;
-    % retta per due punti
-    rect1 = rect(x,x_1,y_1,xm3,ym3);    % mediano rossa-ciano
-    rect2 = rect(x,x_2,y_2,xm1,ym1);    % mediano verde-rosso
-    rect3 = rect(x,x_3,y_3,xm2,ym2);    % mediano ciano-verde
-    
-    % baricentro
-    x_bc = solve( rect1 == rect2 );
-    y_bc = subs(rect3,x,x_bc);
-    
-    
-else
-    diag1(x) = tand(theta1 + 90) * ( x - offset1*cosd(theta1) ) + offset1*sind(theta1);
-    diag2(x) = tand(theta2 + 90) * ( x - offset2*cosd(theta2) ) + offset2*sind(theta2);
-    x_bc = solve( diag1 == diag2 );
-    y_bc = diag1(x_bc);
+diag = [];
+for i = 1:size(locs,2)
+    theta = locs(i);
+    offset = xp1(R1(:,locs(i)+1) == pk(i));
+    diag_i(x) = tand(theta + 90) * ( x - offset*cosd(theta) ) + offset*sind(theta);
+    diag = horzcat(diag,diag_i);
 end
-% coords=regionprops(imgBW4,{'Centroid','Orientation'});
-%     x_bc=coords.Centroid(1);
-%     y_bc=coords.Centroid(2);
-% Determino Orientamento a partire da due angoli identificati dalla
-% trasformata di Radon
 
-orient = (theta1+theta2)/2;
-% Controllo se c'è discordanza tra i quadranti identificati dagli angoli
-if(sign(sind(theta1)) ~= sign(sind(theta2)) || sign(cosd(theta1)) ~= sign(cosd(theta2)) )
-    orient = orient-90;
+%%
+param = EllipseDirectFit(props.PixelList);
+syms x1 x2
+A = [param(1) param(2)/2; param(2)/2 param(3)];
+B = [-param(4)/2; -param(5)/2];
+cc = solve(A*[x1;x2]-B,[x1,x2]);
+r = sqrt(param(1)*cc.x1^2+param(3)*cc.x2^2+param(2)*cc.x1*cc.x2-param(6));
+thetasym = linspace(0,2*pi,100000);
+v = [r*cosd(thetasym)', r*sind(thetasym)'];
+z = zeros(size(v,1),2);
+for i = 1:size(v,1)
+    z(i,:) = inv(chol(A))*v(i,:)'+[cc.x1;cc.x2];
 end
+figure
+plot(z(:,1),z(:,2),'*g')
+eq =@(x,y) param(1)*x.^2+param(2)*x*y+param(3)*y.^2+param(4)*x+param(5)*y+param(6);
+
+%%
+
+
 % Mi assicuro che l'angolo trovato sia tra -90° and 90°
 orient = atand(sind(orient)/cosd(orient));
 %% Fine Processamento
