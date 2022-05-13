@@ -274,81 +274,85 @@
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>31) >
+      <with|color|red|(<with|math-font-family|rm|%i>26) >
     <|unfolded-io>
       stateX:[eq[7]=0,eq[8]=0]
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o31>)
+      \;
+
+      \ <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o26>)
       >><around*|[|x<rsub|2>-<around*|(|x<rsub|1>|)><rsub|t>=0,u<rsub|1>-<around*|(|x<rsub|2>|)><rsub|t>=0|]>>>
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>38) >
+      <with|color|red|(<with|math-font-family|rm|%i>27) >
     <|unfolded-io>
       solX:solve(stateX,[diff(x[1],t),diff(x[2],t)])[1]
     <|unfolded-io>
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o27>)
+      >><around*|[|<around*|(|x<rsub|1>|)><rsub|t>=x<rsub|2>,<around*|(|x<rsub|2>|)><rsub|t>=u<rsub|1>|]>>>
+    </unfolded-io>
+
+    <\unfolded-io>
+      <with|color|red|(<with|math-font-family|rm|%i>28) >
+    <|unfolded-io>
+      stateY:[eq[9],eq[10]]
+    <|unfolded-io>
       \;
 
-      \ <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o38>)
-      >><around*|[|<around*|(|x<rsub|1>|)><rsub|t>=x<rsub|2>,<around*|(|x<rsub|2>|)><rsub|t>=u<rsub|1>|]>>>
+      \ <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o28>)
+      >><around*|[|y<rsub|2>-<around*|(|y<rsub|1>|)><rsub|t>,u<rsub|2>-<around*|(|y<rsub|2>|)><rsub|t>|]>>>
     </unfolded-io>
 
     <\unfolded-io>
       <with|color|red|(<with|math-font-family|rm|%i>29) >
     <|unfolded-io>
-      stateY:[eq[9],eq[10]]
-    <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o29>)
-      >><around*|[|y<rsub|2>-<around*|(|y<rsub|1>|)><rsub|t>,u<rsub|2>-<around*|(|y<rsub|2>|)><rsub|t>|]>>>
-    </unfolded-io>
-
-    <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>37) >
-    <|unfolded-io>
       solY:solve(stateY,[diff(y[1],t),diff(y[2],t)])[1]
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o37>)
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o29>)
       >><around*|[|<around*|(|y<rsub|1>|)><rsub|t>=y<rsub|2>,<around*|(|y<rsub|2>|)><rsub|t>=u<rsub|2>|]>>>
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>44) >
+      <with|color|red|(<with|math-font-family|rm|%i>30) >
     <|unfolded-io>
       x[2]:integrate(part(solX,2,2),t,t[i],tau)
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o44>)
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o30>)
       >>u<rsub|1>*<around*|(|\<tau\>-t<rsub|i>|)>>>
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>46) >
+      <with|color|red|(<with|math-font-family|rm|%i>31) >
     <|unfolded-io>
       x[1]:expand(integrate(x[2],tau,t[i],t))
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o46>)
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o31>)
       >><frac|u<rsub|1>*t<rsup|2>|2>-u<rsub|1>*t<rsub|i>*t+<frac|u<rsub|1>*t<rsub|i><rsup|2>|2>>>
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>48) >
+      <with|color|red|(<with|math-font-family|rm|%i>32) >
     <|unfolded-io>
       y[2]:integrate(part(solY,2,2),t,t[i],tau)
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o48>)
+      \;
+
+      \ <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o32>)
       >>u<rsub|2>*<around*|(|\<tau\>-t<rsub|i>|)>>>
     </unfolded-io>
 
     <\unfolded-io>
-      <with|color|red|(<with|math-font-family|rm|%i>49) >
+      <with|color|red|(<with|math-font-family|rm|%i>33) >
     <|unfolded-io>
       y[1]:expand(integrate(y[2],tau,t[i],t))
     <|unfolded-io>
-      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o49>)
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o33>)
       >><frac|u<rsub|2>*t<rsup|2>|2>-u<rsub|2>*t<rsub|i>*t+<frac|u<rsub|2>*t<rsub|i><rsup|2>|2>>>
     </unfolded-io>
 
     <\input>
-      <with|color|red|(<with|math-font-family|rm|%i>50) >
+      <with|color|red|(<with|math-font-family|rm|%i>34) >
     <|input>
       \;
     </input>

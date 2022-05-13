@@ -70,7 +70,7 @@ for i = 1:5
         ll = line([currPoint(1), closestObs(2)],...
             [currPoint(2), closestObs(1)],...
             'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-        pause()
+        pause(0.01)
         delete(h);
         delete(hobs);
         delete(robot)
