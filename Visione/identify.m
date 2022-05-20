@@ -188,6 +188,14 @@ end
 figure
 plot(z(:,1),z(:,2),'*g')
 eq =@(x,y) param(1)*x.^2+param(2)*x*y+param(3)*y.^2+param(4)*x+param(5)*y+param(6);
+%%
+bound=bwboundaries(imgBW4);
+obb=bound{1};
+[z, a, b, alpha] = fitellipse([obb(:,2)';obb(:,1)'], 'linear', 'constraint', 'trace');
+figure
+plot(obb(:,2),obb(:,1),'g','LineWidth',3);
+hold on
+plotellipse(z, a, b, alpha)
 
 %%
 

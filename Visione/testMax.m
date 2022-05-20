@@ -167,36 +167,167 @@ plot(theta, maxRadon);
 % NPeaks specifica quanti massimi locali trovare nel vettore.
 % figure
 angleSum = 180*numLati-360;
-hold on
 
-% [pk, locs] = findpeaks(maxRadon,'SortStr','descend');
-% plot(locs, pk,'ob') 
-% [M, idM] = max(pk);
-% theta1 = locs(idM)-2:locs(idM)+1;
-% [R2, xp2] = radon(imgBW4,  theta1);
-% maxRadon2 = max(R2);
-% plot(theta1, maxRadon2, 'r');
-% figure
-% hold on
 [pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
     'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25,'Threshold',1e-4);
 locs = locs - 1;
 plot(locs, pk ,'or') 
 grid on
 [M, idM] = max(pk);
-% locs2 = locs2 +locs(idM);
-% plot(locs2, pk2,'*r') 
-% [pk, locs] = findpeaks(maxRadon,'SortStr','descend','MinPeakDistance',60);
-% plot(locs, pk,'-g') 
+
+
+%% Ellisse circoscritta all'oggetto
+figure
+grid on
+hold on 
+% trovo l'oggetto più grande nella fotoù
+if length(B) == 1 
+    obb = B{1};
+elseif length(B) > 1
+    maxi = 0;
+    lenprev = length(B{1});
+    for i = 2:length(B)
+        if length(B{i}) > lenprev
+            lenrev = length(B{i});
+            maxi = i;
+        end
+    end
+    obb = B{maxi};
+end
+[z, a, b, alpha] = fitellipse([obb(:,2)';obb(:,1)'], 'linear', 'constraint', 'trace');
 
 %%
+diag = [];
+for i = 1:size(locs,2)
+    theta = locs(i);
+    offset = xp1(R1(:,locs(i)+1) == pk(i));
+    diag_i(x) = tand(theta + 90) * ( x - offset*cosd(theta) ) + offset*sind(theta);
+    diag = horzcat(diag,diag_i);
+end
+orient = alpha+pi;
+
+
+
+%%
+%% Fine Processamento
+elapseTime = toc;
+%% Visualizzo Immagine a Colori
+% figure
+% imshow(imgRGB)
+% title('Immagine a Colori');
+
+%% Visualizzo immagine a colori compressa
 figure
-subplot(2,2,1)
-imshow(imgRGB);
-subplot(2,2,2)
-imshow(imgBW2);
-subplot(2,2,3)
-imshow(imgBW3);
-subplot(2,2,4)
+subplot(3,1,1)
+imshow(imgRGB)
+title('Immagine a Colori Compressa');
+
+%% Visualizzo immagine in scala di grigi
+subplot(3,1,2)
+imshow(imgGRS)
+title('Immagine in Scala di Grigi');
+
+%% Visualizzo immagine in B/N
+subplot(3,1,3)
+imshow(imgBW)
+title('Immagine in Bianco e Nero');
+
+%% Visualizzo immagine senza artefatti
+figure
+subplot(3,1,1)
+imshow(imgBW2)
+title('Dopo Area Opening');
+
+%% Visualizzo immagine dopo operatori morfologici
+subplot(3,1,2)
+imshow(imgBW3)
+title('Dopo Dilataizione ed Erosione');
+
+%% Visualizzo immagine Pre-Processata
+subplot(3,1,3)
+imshow(imgBW4)
+title('Dopo Eliminazione dei Disturbi/Fori');
+
+%% Visualizzo la Trasformata di Radon come colormap
+figure
+imagesc(theta, xp1, R1); colormap(hot);
+xlabel('\theta (degrees)');
+ylabel('x^{\prime} (pixels from center)');
+title('Trasfomata di Radon: R_{\theta} (x^{\prime})');
+colorbar
+%% Visualizzo la trasformata di Radon come proiezione
+figure
+tiledlayout(4,3);
+t1=nexttile;
+plot(xp1,R1(:,1));
+title(t1,'0°','Color','r')
+t2=nexttile;
+plot(xp1,R1(:,16));
+title(t2,'15°','Color','#ffd700')
+t3=nexttile;
+plot(xp1,R1(:,31));
+title(t3,'30°','Color','b')
+t4=nexttile;
+plot(xp1,R1(:,46));
+title(t4,'45°','Color','#008000')
+t5=nexttile;
+plot(xp1,R1(:,61));
+title(t5,'60°','Color','m')
+t6=nexttile;
+plot(xp1,R1(:,76));
+title(t6,'75°','Color','#f08080')
+t7=nexttile;
+plot(xp1,R1(:,91));
+title(t7,'90°','Color','k')
+t8=nexttile;
+plot(xp1,R1(:,106));
+title(t8,'105°','Color','#77AC30')
+t9=nexttile;
+plot(xp1,R1(:,121));
+title(t9,'120°','Color','#4DBEEE')
+t10=nexttile;
+plot(xp1,R1(:,136));
+title(t10,'135°','Color','#D95319')
+plot(xp1,R1(:,151));
+t11=nexttile;
+title(t11,'150°','Color','#EDB120')
+t12=nexttile;
+plot(xp1,R1(:,166));
+title(t12,'165°','Color','#7E2F8E')
+%% contorno dell'oggetto
+figure
 imshow(imgBW4);
-hold on 
+hold on
+plot(obb(:,2),obb(:,1),'g','LineWidth',3);
+% alpha angolo in radiante preso in senso antiorario. phi serve a spannare
+% i punti va da 0 a 2pi. a e b sono rispettivamente semi axe maggiore e
+% minore e z è il centro
+plotellipse(z, a, b, alpha)
+% plotellipse(z, a, b, 0)
+% plotellipse(z, a, b, pi/4)
+% plotellipse(z, a, b, pi/2)
+
+%% Disegno assi maggiori dell'oggetto
+syms rect(x,x0,y0,m) x
+rect(x,x0,y0,m)=m*(x-x0)+y0;
+ang=(alpha-pi);
+majorax=rect(x,z(1),z(2),ang);
+point=subs(majorax,x,z(1)+linspace(-a/2,a/2));
+plot(z(1)+linspace(-a/2,a/2),point)
+plot(z(1),z(2),'*g')
+% while(1)
+
+minorax=rect(x,z(1),z(2),-1/ang);
+point=subs(minorax,x,z(1)+linspace(-b/2,b/2));
+h=plot(z(1)+linspace(-b/2,b/2),point);
+% pause()
+% i=i+10;
+% delete(h)
+% end
+%% Visualizzo Diagonali dell'oggetto
+% lineOrient = rect(x,z(1),z(2),)
+lineOrient = center(2) - z(2) - tan(orient) * ( x - center(1) - z(1) ) ;
+for i =1:size(diag,2)
+    fplot(diag(i), 'LineWidth', 1.5);
+    hold on
+end
