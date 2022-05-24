@@ -24,20 +24,18 @@ diag = sym.empty;
 % filename = 'Immagini/horizontalCalcW.jpg';
 % Calcolatrice Orizzontale sfondo nero 
 % filename = 'Immagini/horizontalCalcB.jpg';
-% Rondella Circolare 
-% filename = 'Immagini/rondella.jpg';
 % Mensola Triangolare
 % filename = 'Immagini/triangolo.jpg';
 % Dado Esagonale 
-% filename = 'Immagini/esagono_rot.png';
+filename = 'Immagini/esagono_rot.png';
 % Controller
-filename = 'Immagini/controller.jpg';
+% filename = 'Immagini/controller.jpg';
 % filename = 'Immagini/QuadratoRosso.jpg';
 %% Caricamento Immagine
 imgRGB = imread(filename);  
 rng('default')
 %% Applico rumore per testing sulla robustezza
-imgRGB = imnoise(imgRGB,'salt & pepper',0.5);
+% imgRGB = imnoise(imgRGB,'salt & pepper', 0.5);
 %% Pre-Processamento: Compressione dell'immagine
 % Per mantenere un rapporto di grandezze tra l'aspetto dell'immagine in
 % ingresso quella post compressione, una delle due dimensioni viene decisa
@@ -102,13 +100,15 @@ objPerim = max(perims);
 % Sapendo che Area = (perimetro * apotema)/2 e che l'apotema è pari ad un
 % numero fisso per perimetro/numero_lati, troviamo che
 apothem = objArea*2/objPerim;
-epsilon = 0.05;
+epsilon = 0.01;
 objShape = "Irregolare";
-fixed = [0.289,0.5,0.688,0.866,objPerim^2/(4*objArea)];
-polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono","Cerchio"];
-minPerim=zeros(size(polig));
-for i=1:4
-    numLati = i+2
+fixed = [0.28867, 0.5, 0.68819, 0.86602];
+polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
+deltaP=zeros(size(polig));
+deltaA=zeros(size(polig));
+deltaFix=zeros(size(polig));
+for i=1:length(polig)
+    numLati = i+2;
 %     if(apothem/objPerim*numLati < fixed(i)+epsilon)
 %         if(apothem/objPerim*numLati > fixed(i)-epsilon)
 %             objShape = polig(i);
@@ -116,26 +116,23 @@ for i=1:4
 %         end
 %     end
 % calcolo valori fissi sperimentali
-fixExp = apothem/objPerim*numLati
 % controllo quale valore fisso è più vicino
-% [~,idx] = min(abs(fixed-fixExp))
 % Calcolo perimetro sperimentale 
-perimExp = apothem/fixed(i)*numLati
+    perimExp = apothem/fixed(i)*numLati;
+    areaExp = apothem^2*numLati/fixed(i);
+    fixExp = apothem*numLati/objPerim
 % controllo quale perimetro più si avvicina a quello dell'oggetto
-minPerim(i)=min(abs(objPerim-perimExp))
+    deltaP(i) = min(abs(objPerim-perimExp));
+    deltaA(i) = min(abs(objArea-areaExp));
+    deltaFix(i) = min(abs(fixed(i)-fixExp));
+% areaexp=perimExp*apothem/2
+% abs(objArea-areaexp)
 end
-[~,idx] = min(minPerim);
+[~,idx] = min(deltaP);
+[~,idx] = min(deltaA);
+[~,idx] = min(deltaFix);
+
 objShape = polig(idx);
-% Stesso discorso dei poligoni regolari, ma su una circonferenza
-if (strcmp(objShape, "Irregolare") == 1)
-    epsilon = 0.55;
-    myPi = objPerim^2/(4*objArea);
-    if(myPi < pi+epsilon)
-        if(myPi > pi-epsilon)
-            objShape = "Circolare";
-        end
-    end
-end
 
 %% Eseguo Trasformata di Radon per determinare baricentro ed orientamento
 % Calcoliamo le proiezioni, in modo tale da identificare le diagonali
@@ -157,10 +154,10 @@ maxRadon = max(R1);
 % figure
 angleSum = 180*numLati-360;
 [pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
-    'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25,'Threshold',1e-4);
+    'MinPeakHeight',max(maxRadon)*0.6,'MinPeakDistance',30,'Threshold',1e-4);
 % Scommentare per plottare l'output di findpeak
-% findpeaks(maxRadon,'SortStr','descend',...
-%     'MinPeakHeight',max(maxRadon)*0.95,'MinPeakDistance',25,'Threshold',1e-4)
+% findpeaks(maxRadon,'SortStr','descend','MinPeakHeight',max(maxRadon)*0.6,...
+%     'MinPeakDistance',25,'Threshold',1e-4)
 locs = locs - 1;
 [M, idM] = max(pk);
 %% Ellisse circoscritta all'oggetto
@@ -183,12 +180,12 @@ end
 %% Calcolo diagonali
 for i = 1:size(locs,2)
     theta_i = locs(i);
-    diag_i(x) = -tand(theta_i+90)*(x-z(1))+z(2);
+        offset = xp1(R1(:,locs(i)+1) == pk(i));
+    diag_i(x) = -tand(theta_i+90)*(x-offset*cosd(theta_i)-center(1))-offset*sind(theta_i)+center(2);
     diag = horzcat(diag,diag_i(x));
 end
 orient = alpha+pi;
 
-%%
 %% Fine Processamento
 elapseTime = toc;
 %% Visualizzo Immagine a Colori
@@ -319,7 +316,7 @@ for i =1:size(diag,2)
     hold on
 end
 %% Report dell'Identificazione
-fprintf("Area: %f, Perimetro: %f\n", floor(objArea), floor(objPerim));
+fprintf("Area: %f, Perimetro: %f\n", objArea, objPerim);
 fprintf("Forma dell'Oggetto: %s\n", objShape);
 fprintf("Baricentro dell'Oggetto: X[bc] = %f, Y[bc] = %f\n", z(1), z(2));
 fprintf("Orientamento dell'Oggetto: %f°\n", mod(-rad2deg(orient),360));

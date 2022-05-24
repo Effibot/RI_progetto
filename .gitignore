@@ -17,3 +17,4 @@ main/.vscode/*.code-snippets
 .ionide
 
 main/out/*
+*.asv

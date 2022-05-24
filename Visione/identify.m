@@ -168,7 +168,7 @@ diag = [];
 for i = 1:size(locs,2)
     theta = locs(i);
     offset = xp1(R1(:,locs(i)+1) == pk(i));
-    diag_i(x) = tand(theta + 90) * ( x - offset*cosd(theta) ) + offset*sind(theta);
+    diag_i(x) = tand(theta + 90) * ( x - offset*cosd(theta+90) ) + offset*sind(theta+90);
     diag = horzcat(diag,diag_i);
 end
 
