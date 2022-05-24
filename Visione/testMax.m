@@ -17,7 +17,7 @@ diag = sym.empty;
 % % Calcolatrice Verticale con luce diffusa
 % filename = 'Immagini/verticalCalc.jpg';
 % % Calcolatrice in Diagonale con sfondo bianco 
-% filename = 'Immagini/rotateCalcW.jpg';
+filename = 'Immagini/rotateCalcW.jpg';
 % % Calcolatrice Orizzontale con Ombra
 % filename = 'Immagini/horizontalCalcShadow.jpg';
 % % Calcolatrice Orizzontale sfondo bianco 
@@ -25,9 +25,12 @@ diag = sym.empty;
 % % Calcolatrice Orizzontale sfondo nero 
 % filename = 'Immagini/horizontalCalcB.jpg';
 % % Mensola Triangolare
-filename = 'Immagini/triangolo.jpg';
+% filename = 'Immagini/triangolo.jpg';
+% % Pentagono Regolare
+% filename = 'Immagini/pentagono.jpg';
 % % Dado Esagonale 
-filename = 'Immagini/esagono_rot.png';
+% filename = 'Immagini/esagono_rot.png';
+% filename = 'Immagini/esagono.png';
 %% Caricamento Immagine
 imgRGB = imread(filename);  
 rng('default')
@@ -53,9 +56,7 @@ tic;        % Avvio contatore del tempo di processamento
 imgGRS = rgb2gray(imgRGB);
 %% Converto l'immagine in B/N
 imgBW = imbinarize(imgGRS);
-%% Calcolo il negativo dell'immagine se questa è troppo chiara
-% utile per le operazioni successive
-% Prima somma per le colonne, seconda per le righe
+%% Calcolo il negativo dell'immagine
 nPixelW = sum(sum(imgBW));
 if(nPixelW >= res/2)
     imgBW_old = imgBW;
@@ -63,9 +64,14 @@ if(nPixelW >= res/2)
 end
 %% Elimino difetti nell'immagine
 % utile per eliminare artefatti grafici (es: ombre)
+% Filtriamo in base al perimetro delle sagome bianche su sfondo nero.
 % pxToDel = 50;        % Soglia di pixel da considerare come rumore.
-pxToDel = 40000;      % Soglia per Ombra
-imgBW2 = bwareaopen(imgBW,pxToDel);
+% % pxToDel = 40000;      % Soglia per Ombra
+% nPixelB = maxRes(1)*maxRes(2)-nPixelW;
+% pxToDel = round(nPixelW/nPixelB*10000)
+% % imgBW2 = bwareaopen(imgBW,pxToDel);
+imgBW2 = bwpropfilt(imgBW,'perimeter',1);
+imshow(imgBW2)
 %% Applico Maschere di Dilatazione ed Erosione
 % Definisco operatore morfologico: Applico maschere quadrate
 mask=strel('disk',10,8);
@@ -98,7 +104,6 @@ objPerim = max(perims);
 % numero fisso per perimetro/numero_lati, troviamo che
 apothem = objArea*2/objPerim;
 epsilon = 0.01;
-objShape = "Irregolare";
 fixed = [0.28867, 0.5, 0.68819, 0.86602];
 polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
 deltaP=zeros(size(polig));
@@ -107,12 +112,6 @@ deltaFix=zeros(size(polig));
 deltaAp=zeros(size(polig));
 for i=1:length(polig)
     numLati = i+2;
-%     if(apothem/objPerim*numLati < fixed(i)+epsilon)
-%         if(apothem/objPerim*numLati > fixed(i)-epsilon)
-%             objShape = polig(i);
-%             break;
-%         end
-%     end
 % calcolo valori fissi sperimentali
 % controllo quale valore fisso è più vicino
 % Calcolo perimetro sperimentale 
@@ -128,7 +127,6 @@ for i=1:length(polig)
 % areaexp=perimExp*apothem/2
 % abs(objArea-areaexp)
 end
-
 [~,idP] = min(deltaP);
 [~,idA] = min(deltaA);
 [~,idF] = min(deltaFix);
@@ -153,7 +151,7 @@ maxRadon = max(R1);
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
 % figure
-angleCut = 180/numLati
+angleCut = 180/numLati;
 [pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
     'MinPeakHeight',max(maxRadon)*0.7,'MinPeakDistance',angleCut,'Threshold',1e-4);
 % Scommentare per plottare l'output di findpeak
