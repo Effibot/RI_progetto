@@ -14,23 +14,20 @@ rect(x,x0,y0,m)=m*(x-x0)+y0;
 rect2p(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
 diag = sym.empty;
 %% Lettura Immagini e caricamento in workspace
-% Calcolatrice Verticale con luce diffusa
+% % Calcolatrice Verticale con luce diffusa
 % filename = 'Immagini/verticalCalc.jpg';
-% Calcolatrice in Diagonale con sfondo bianco 
+% % Calcolatrice in Diagonale con sfondo bianco 
 % filename = 'Immagini/rotateCalcW.jpg';
-% Calcolatrice Orizzontale con Ombra
+% % Calcolatrice Orizzontale con Ombra
 % filename = 'Immagini/horizontalCalcShadow.jpg';
-% Calcolatrice Orizzontale sfondo bianco 
+% % Calcolatrice Orizzontale sfondo bianco 
 % filename = 'Immagini/horizontalCalcW.jpg';
-% Calcolatrice Orizzontale sfondo nero 
+% % Calcolatrice Orizzontale sfondo nero 
 % filename = 'Immagini/horizontalCalcB.jpg';
-% Mensola Triangolare
+% % Mensola Triangolare
 filename = 'Immagini/triangolo.jpg';
-% Dado Esagonale 
-% filename = 'Immagini/esagono_rot.png';
-% Controller
-% filename = 'Immagini/controller.jpg';
-% filename = 'Immagini/QuadratoRosso.jpg';
+% % Dado Esagonale 
+filename = 'Immagini/esagono_rot.png';
 %% Caricamento Immagine
 imgRGB = imread(filename);  
 rng('default')
@@ -121,8 +118,8 @@ for i=1:length(polig)
 % Calcolo perimetro sperimentale 
     perimExp = apothem/fixed(i)*numLati;
     areaExp = apothem^2*numLati/fixed(i);
-    fixExp = apothem*numLati/objPerim
-    apExp = 2*areaExp/perimExp
+    fixExp = apothem*numLati/objPerim;
+    apExp = 2*areaExp/perimExp;
 % controllo quale perimetro più si avvicina a quello dell'oggetto
     deltaP(i) = min(abs(objPerim-perimExp));
     deltaA(i) = min(abs(objArea-areaExp));
@@ -134,16 +131,9 @@ end
 
 [~,idP] = min(deltaP);
 [~,idA] = min(deltaA);
-% if idP ~= idA 
-%     [~,idF] = min(deltaFix);
-%     if idP == idF
-%         
-%     end
-% end
 [~,idF] = min(deltaFix);
 [~,idap] = min(deltaAp);
-
-objShape = polig(idx);
+objShape = polig(mode([idP,idA,idF,idap]));
 
 %% Eseguo Trasformata di Radon per determinare baricentro ed orientamento
 % Calcoliamo le proiezioni, in modo tale da identificare le diagonali
@@ -163,9 +153,9 @@ maxRadon = max(R1);
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
 % figure
-angleSum = 180*numLati-360;
+angleCut = 180/numLati
 [pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
-    'MinPeakHeight',max(maxRadon)*0.6,'MinPeakDistance',30,'Threshold',1e-4);
+    'MinPeakHeight',max(maxRadon)*0.7,'MinPeakDistance',angleCut,'Threshold',1e-4);
 % Scommentare per plottare l'output di findpeak
 % findpeaks(maxRadon,'SortStr','descend','MinPeakHeight',max(maxRadon)*0.6,...
 %     'MinPeakDistance',25,'Threshold',1e-4)

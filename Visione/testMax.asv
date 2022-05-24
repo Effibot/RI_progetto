@@ -14,28 +14,25 @@ rect(x,x0,y0,m)=m*(x-x0)+y0;
 rect2p(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
 diag = sym.empty;
 %% Lettura Immagini e caricamento in workspace
-% Calcolatrice Verticale con luce diffusa
+% % Calcolatrice Verticale con luce diffusa
 % filename = 'Immagini/verticalCalc.jpg';
-% Calcolatrice in Diagonale con sfondo bianco 
+% % Calcolatrice in Diagonale con sfondo bianco 
 % filename = 'Immagini/rotateCalcW.jpg';
-% Calcolatrice Orizzontale con Ombra
+% % Calcolatrice Orizzontale con Ombra
 % filename = 'Immagini/horizontalCalcShadow.jpg';
-% Calcolatrice Orizzontale sfondo bianco 
+% % Calcolatrice Orizzontale sfondo bianco 
 % filename = 'Immagini/horizontalCalcW.jpg';
-% Calcolatrice Orizzontale sfondo nero 
+% % Calcolatrice Orizzontale sfondo nero 
 % filename = 'Immagini/horizontalCalcB.jpg';
-% Mensola Triangolare
+% % Mensola Triangolare
 % filename = 'Immagini/triangolo.jpg';
-% Dado Esagonale 
-filename = 'Immagini/esagono_rot.png';
-% Controller
-% filename = 'Immagini/controller.jpg';
-% filename = 'Immagini/QuadratoRosso.jpg';
+% % Dado Esagonale 
+% filename = 'Immagini/esagono_rot.png';
 %% Caricamento Immagine
 imgRGB = imread(filename);  
 rng('default')
 %% Applico rumore per testing sulla robustezza
-% imgRGB = imnoise(imgRGB,'salt & pepper', 0.5);
+imgRGB = imnoise(imgRGB,'salt & pepper', 0.5);
 %% Pre-Processamento: Compressione dell'immagine
 % Per mantenere un rapporto di grandezze tra l'aspetto dell'immagine in
 % ingresso quella post compressione, una delle due dimensioni viene decisa
@@ -107,6 +104,7 @@ polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
 deltaP=zeros(size(polig));
 deltaA=zeros(size(polig));
 deltaFix=zeros(size(polig));
+deltaAp=zeros(size(polig));
 for i=1:length(polig)
     numLati = i+2;
 %     if(apothem/objPerim*numLati < fixed(i)+epsilon)
@@ -121,18 +119,22 @@ for i=1:length(polig)
     perimExp = apothem/fixed(i)*numLati;
     areaExp = apothem^2*numLati/fixed(i);
     fixExp = apothem*numLati/objPerim
+    apExp = 2*areaExp/perimExp
 % controllo quale perimetro più si avvicina a quello dell'oggetto
     deltaP(i) = min(abs(objPerim-perimExp));
     deltaA(i) = min(abs(objArea-areaExp));
     deltaFix(i) = min(abs(fixed(i)-fixExp));
+    deltaAp(i) = min(abs(apothem-apExp));
 % areaexp=perimExp*apothem/2
 % abs(objArea-areaexp)
 end
-[~,idx] = min(deltaP);
-[~,idx] = min(deltaA);
-[~,idx] = min(deltaFix);
 
-objShape = polig(idx);
+[~,idP] = min(deltaP);
+[~,idA] = min(deltaA);
+[~,idF] = min(deltaFix);
+[~,idap] = min(deltaAp);
+[idP,idA,idF,idap]
+objShape = polig(mode([idP,idA,idF,idap]));
 
 %% Eseguo Trasformata di Radon per determinare baricentro ed orientamento
 % Calcoliamo le proiezioni, in modo tale da identificare le diagonali
