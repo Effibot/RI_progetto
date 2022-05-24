@@ -345,7 +345,7 @@ end
 % Cell array of valid property names
 properties = {'constraint', 'maxits', 'tol'};
 
-while length(varargin) ~= 0
+while ~isempty(varargin)
     % Pop pair off varargin
     property      = varargin{1};
     value         = varargin{2};

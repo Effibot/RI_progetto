@@ -17,7 +17,7 @@ diag = sym.empty;
 % Calcolatrice Verticale con luce diffusa
 % filename = 'Immagini/verticalCalc.jpg';
 % Calcolatrice in Diagonale con sfondo bianco 
-filename = 'Immagini/rotateCalcW.jpg';
+% filename = 'Immagini/rotateCalcW.jpg';
 % Calcolatrice Orizzontale con Ombra
 % filename = 'Immagini/horizontalCalcShadow.jpg';
 % Calcolatrice Orizzontale sfondo bianco 
@@ -37,7 +37,7 @@ filename = 'Immagini/controller.jpg';
 imgRGB = imread(filename);  
 rng('default')
 %% Applico rumore per testing sulla robustezza
-imgRGB = imnoise(imgRGB,'salt & pepper',0.9);
+imgRGB = imnoise(imgRGB,'salt & pepper',0.5);
 %% Pre-Processamento: Compressione dell'immagine
 % Per mantenere un rapporto di grandezze tra l'aspetto dell'immagine in
 % ingresso quella post compressione, una delle due dimensioni viene decisa
@@ -104,8 +104,8 @@ objPerim = max(perims);
 apothem = objArea*2/objPerim;
 epsilon = 0.05;
 objShape = "Irregolare";
-fixed = [0.289,0.5,0.688,0.866];
-polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
+fixed = [0.289,0.5,0.688,0.866,objPerim^2/(4*objArea)];
+polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono","Cerchio"];
 minPerim=zeros(size(polig));
 for i=1:4
     numLati = i+2
