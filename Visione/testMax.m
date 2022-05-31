@@ -25,7 +25,7 @@ filename = 'Immagini/rotateCalcW.jpg';
 % % Calcolatrice Orizzontale sfondo nero 
 % filename = 'Immagini/horizontalCalcB.jpg';
 % % Mensola Triangolare
-% filename = 'Immagini/triangolo.jpg';
+filename = 'Immagini/triangolo.jpg';
 % % Pentagono Regolare
 % filename = 'Immagini/pentagono.jpg';
 % % Dado Esagonale 
@@ -151,7 +151,7 @@ maxRadon = max(R1);
 % SosrtStr specifica che i risultati andranno ordinati
 % NPeaks specifica quanti massimi locali trovare nel vettore.
 % figure
-angleCut = 180/numLati;
+angleCut = (180*(numLati-2))/numLati;
 [pk, locs] = findpeaks(maxRadon,'SortStr','descend',...
     'MinPeakHeight',max(maxRadon)*0.7,'MinPeakDistance',angleCut,'Threshold',1e-4);
 % Scommentare per plottare l'output di findpeak

@@ -42,9 +42,9 @@ function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
         end
     end
     % Risolvo equazioni per calcolare le spline
-    t = 0:1:size(nPoints,1)-1;  % waypoints
+    t = 0:1/(size(nPoints,1)-1):1;  % waypoints
     k = 1000;    % sampling factor
-    tq = t(1):1/k:t(end);   % symtime
+    tq = t(1):1/(4*k):t(end);   % symtime
     % makima permette di creare curve di tipo C1
     if pp
         curvex = makima(t,nPoints(:,2));
@@ -65,7 +65,21 @@ function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
     %     subplot(1,3,3)
     %     plot(curvex,curvey,'b')
     %     title('x vs y')
+    %% Controllo errore sulle distanze tra un punto e il successivo
+%     dist = norm(curve(1,:)-curve(2,:));
+%     for i = 2:size(curve,1)-1
+%         dist = [dist;norm(curve(i,:)-curve(i+1,:))];
+%     end
+%     err = mean(dist)
+%     t = 0:2:24;
+%     curvex = makima([0:24],nPoints(:,2),0:24)
+%     curvey = makima([0:24],nPoints(:,1),0:24)
 
+%     curve = [t',curvex']
+%     dist = norm(curve(1,:)-curve(2,:));
+%     for i = 2:size(curve,1)-1
+%         dist = [dist;norm(curve(i,:)-curve(i+1,:))];
+%     end
 end
 
 function point = selectPoint(node, next, Amid, Aint, robotSize, obsList)

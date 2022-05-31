@@ -44,12 +44,12 @@ for i = 1:5
     endId = idList(randi(size(idList,2)));
     P = shortestpath(G, startId, endId);
     idList(ismember(idList,startId)) = [];
-    trajectory = pathfind(nodeList, P, Aint, Amid, robotsize, rbclist, true);
+%     trajectory = pathfind(nodeList, P, Aint, Amid, robotsize, rbclist, true);
     points = pathfind(nodeList, P, Aint, Amid, robotsize, rbclist, false);
     pp = cscvn([points(:,1)'; points(:,2)']);
     fnplt(pp)
-    dppx = fnder(trajectory(1));
-    dppy = fnder(trajectory(2));
+%     dppx = fnder(trajectory(1));
+%     dppy = fnder(trajectory(2));
     for j = 1:fix(size(points,1)/100):size(points,1)
         currPoint = points(j,:);
         [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
@@ -70,7 +70,7 @@ for i = 1:5
         ll = line([currPoint(1), closestObs(2)],...
             [currPoint(2), closestObs(1)],...
             'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-        pause(0.01)
+        pause(0.05)
         delete(h);
         delete(hobs);
         delete(robot)
