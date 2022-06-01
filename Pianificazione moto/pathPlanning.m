@@ -2,12 +2,11 @@ clc
 clear
 close all
 %% Setup
-% rng("default")
+rng("default")
 dim=[1024,1024];
 % obs=[105,100,30;300,400,80;800,78,66;700,150,201;555,777,200;512,512,24;700,200,90;900,900,10];
 robotsize = 48;
 numObst = 10;
-% rng('default');
 % obs = maprng(dim(1),dim(2), numObst);
 % map = makeMap(obs,dim);
 % save map.mat
@@ -44,12 +43,31 @@ for i = 1:5
     endId = idList(randi(size(idList,2)));
     P = shortestpath(G, startId, endId);
     idList(ismember(idList,startId)) = [];
-%     trajectory = pathfind(nodeList, P, Aint, Amid, robotsize, rbclist, true);
-    points = pathfind(nodeList, P, Aint, Amid, robotsize, rbclist, false);
-    pp = cscvn([points(:,1)'; points(:,2)']);
-    fnplt(pp)
-%     dppx = fnder(trajectory(1));
-%     dppy = fnder(trajectory(2));
+    [points,dudt] = pathfind(nodeList, P, Aint, Amid, rbclist);
+    q=curvspace(points,size(points,1));
+%Derivatives
+dxdt = diff(q(:,1),[],1);
+dydt= diff(q(:,2),[],1);
+% quiver(q(2:end,1),q(2:end,2),dxdt,dydt);
+%Distance between points
+dist = norm(q(1,:)-q(2,:));
+dnom=dist;
+for ii = 2:size(q,1)-1
+dist = [dist;norm(q(ii,:)-q(ii+1,:))];
+end
+% Mod V
+a=[dxdt,dydt];
+modV=norm(a(1,:));
+modVn=modV;
+for ii = 2:size(a,1)-1
+modV = [modV;norm(a(ii,:))];
+end
+%     figure
+%     hold on 
+%     plot(points(:,1),points(:,2),'LineStyle','-','LineWidth',5);
+s= plot(q(:,1),q(:,2),'*');
+   ds= quiver(points(:,1),points(:,2),dudt(:,1),dudt(:,2));
+
     for j = 1:fix(size(points,1)/100):size(points,1)
         currPoint = points(j,:);
         [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
@@ -76,6 +94,8 @@ for i = 1:5
         delete(robot)
         delete(ll);
     end
+    delete(s);
+    delete(ds);
 end
 %% plots
 % figure(5)

@@ -1,4 +1,4 @@
-function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
+function [curve,dt] = pathfind(nodeList, idList, Aint, Amid, obsList)
     % nodeList: lista di nodi che compongono il path
     % Aint: matrice n x n x 2 di componenti [x,y]
     % costruisco sequenza di punti in cui far passare il path
@@ -13,7 +13,7 @@ function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
             end
             %             nPoints(end+1,:) = Amid(node.id,next.id,:);
             %             nPoints(end+1,:) = Aint(node.id,next.id,:);
-            nPoints(end+1,:) = selectPoint(node, next, Amid, Aint, robotSize, obsList);
+            nPoints(end+1,:) = selectPoint(node, next, Amid, Aint, obsList);
             nPoints(end+1,:) = next.bc;
         end
     end
@@ -42,53 +42,38 @@ function curve = pathfind(nodeList, idList, Aint, Amid, robotSize, obsList, pp)
         end
     end
     % Risolvo equazioni per calcolare le spline
-    t = 0:1/(size(nPoints,1)-1):1;  % waypoints
-    k = 1000;    % sampling factor
-    tq = t(1):1/(4*k):t(end);   % symtime
-    % makima permette di creare curve di tipo C1
-    if pp
-        curvex = makima(t,nPoints(:,2));
-        curvey = makima(t,nPoints(:,1));
-    else
-        curvex = makima(t,nPoints(:,2),tq);
-        curvey = makima(t,nPoints(:,1),tq);
-    end
-    curve = [curvex',curvey'];
-    %% plot section
-    %     figure
-    %     subplot(1,3,1)
-    %     plot(tq,curvex,'r');
-    %     title('t vs x')
-    %     subplot(1,3,2)
-    %     plot(tq,curvey,'g')
-    %     title('t vs y')
-    %     subplot(1,3,3)
-    %     plot(curvex,curvey,'b')
-    %     title('x vs y')
-    %% Controllo errore sulle distanze tra un punto e il successivo
-%     dist = norm(curve(1,:)-curve(2,:));
-%     for i = 2:size(curve,1)-1
-%         dist = [dist;norm(curve(i,:)-curve(i+1,:))];
-%     end
-%     err = mean(dist)
-%     t = 0:2:24;
-%     curvex = makima([0:24],nPoints(:,2),0:24)
-%     curvey = makima([0:24],nPoints(:,1),0:24)
+    k = 100;    % sampling factor
+    lengthCurve = arclength(nPoints(:,2),nPoints(:,1),'makima');
 
-%     curve = [t',curvex']
-%     dist = norm(curve(1,:)-curve(2,:));
-%     for i = 2:size(curve,1)-1
-%         dist = [dist;norm(curve(i,:)-curve(i+1,:))];
+    density = lengthCurve/size(nPoints,1);
+    [q,dt]=interparc(floor(k*density),nPoints(:,2)',nPoints(:,1)','makima');
+
+    curve=q;
+
+    %% Controllo errore sulle distanze tra un punto e il successivo
+%         q=curvspace(q,size(q,1));
+% q;
+%     dist = norm(q(1,:)-q(2,:));
+%     dnom=dist;
+%     for i = 2:size(q,1)-1
+%         dist = [dist;norm(q(i,:)-q(i+1,:))];
+%         
 %     end
+% 
+% %Derivatives
+% dxdt = diff(q(:,1),[],1);
+% dydt=diff(q(:,2),[],1);
+%     a=[dxdt,dydt];
+% modV=norm(a(1,:)-a(2,:));
+% modVn=modV;
+% for ii = 2:size(a,1)-1
+% modV = [modV;norm(a(ii,:)-a(ii+1,:))];
+% end
+% bbb=abs(modV-modVn)
 end
 
-function point = selectPoint(node, next, Amid, Aint, robotSize, obsList)
-    %     if size(node.value,1) > robotSize && ...
-    %             size(next.value,1) > robotSize
-    %         point = Aint(node.id, next.id,:);
-    %     else
-    %         point = Amid(node.id, next.id,:);
-    %     end
+function point = selectPoint(node, next, Amid, Aint, obsList)
+
     pointInt = [Aint(node.id, next.id,1), Aint(node.id, next.id,2)];
     pointMid = [Amid(node.id, next.id,1), Amid(node.id, next.id,2)];
 
