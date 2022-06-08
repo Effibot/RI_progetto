@@ -69,6 +69,8 @@ if (play) {
     camera_setup();
 room();
 robot.drawLink(robot,x,y);
+
+
   panel1.setCollapsed(true);
 
 } else {

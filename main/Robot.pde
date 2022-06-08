@@ -30,7 +30,28 @@ public class Robot{
     float link5C = 6;   // distanza da baricentro 4 circonferenza link 5
     float link5BX = 71;  // distanza da baricentro 4 del baricentro 5
     float link6B = 72;   // distanza da baricentro 4 del baricentro 5
-    
+    // Coordinate dei sistemi di riferimento
+    float baseX=0;
+        float baseY=0;
+            float baseZ=0;
+            float Link1X =0;
+            float Link1Y=0;
+            float Link1Z=0;
+            float Link2X =0;
+            float Link2Y=0;
+            float Link2Z=0;
+            float Link3X =0;
+            float Link3Y=0;
+            float Link3Z=0;
+            float Link4X =0;
+            float Link4Y=0;
+            float Link4Z=0;
+            float Link5X =0;
+            float Link5Y=0;
+            float Link5Z=0;
+            float Link6X =0;
+            float Link6Y=0;
+            float Link6Z=0;
 
     float inscript = scale(roverD/2+link4BZ + link5BX + link6B);
     private Robot() {
@@ -88,8 +109,10 @@ public class Robot{
                     //link.setFill(color(144,155,10));     
                     shape(link);
                     popMatrix();
+                   
                     break;
                     // link i-esimo
+                    
                 case 1:
                     pushMatrix();                    
                     /* Q_01 */
@@ -105,6 +128,7 @@ public class Robot{
                     translate(0,scale(-link1R),0);
                     link.setFill(color(75,90,2));
                     shape(link);
+                    println(getMatrix());
                     popMatrix();
                     break;
                 case 2: 
