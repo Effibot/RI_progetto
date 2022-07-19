@@ -1,4 +1,4 @@
-function [pt,dudt,fofthandle] = interparc(t,px,py,varargin)
+function [pt,dudt,fofthandle,step,spl] = interparc(t,px,py,varargin)
 % interparc: interpolate points along a curve in 2 or more dimensions
 % usage: pt = interparc(t,px,py)    % a 2-d curve
 % usage: pt = interparc(t,px,py,pz) % a 3-d curve
@@ -331,7 +331,7 @@ for i = 1:ndim
     case 'csape'
       % csape was specified, so the curve is presumed closed,
       % therefore periodic
-      spl{i} = csape(cumarc,pxy(:,i),'periodic');
+      spl{i} = csape(cumarc,pxy(:,i),'clamped');
       nc = numel(spl{i}.coefs);
       if nc < 4
         % just pretend it has cubic segments
@@ -449,7 +449,7 @@ for i = 1:nt
     end
   end
 end
-
+step = ti;
 % Interpolate the parametric splines at ti to get
 % our interpolated value.
 for L = 1:ndim

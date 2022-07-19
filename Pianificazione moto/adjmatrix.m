@@ -40,7 +40,7 @@ function [A, Acomp, Aint, Amid] = adjmatrix(nodeList, toShow)
                         A(node.id,t.id) = 1;
                         A(t.id,node.id) = 1;
                         commonborder = tnodespace(:,in);
-                        Amid(node.id, t.id, :) = flipud(commonborder(:,fix(size(commonborder,2)/2)));;
+                        Amid(node.id, t.id, :) = flipud(ceil(commonborder(:,fix(size(commonborder,2)/2))));
                         [yi, xi] = findintersection(node,t);
                         Aint(node.id,t.id,:) = [yi, xi];
                     end
@@ -56,8 +56,8 @@ function Afix = fixmeasure(A)
     for i = 1:size(A,1)
         for j = 1:size(A,1)
             if A(i,j,1) ~= A(j,i,1) || A(i,j,2) ~= A(j,i,2)
-                y = (A(i,j,1) + A(j,i,1)) /2;
-                x = (A(i,j,2) + A(j,i,2)) /2;                              
+                y = ceil((A(i,j,1) + A(j,i,1)) /2);
+                x = ceil((A(i,j,2) + A(j,i,2)) /2);                              
                 Afix(i,j,:) = [y, x];
                 Afix(j,i,:) = [y, x];
             end

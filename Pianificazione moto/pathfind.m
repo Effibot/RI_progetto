@@ -1,4 +1,4 @@
-function [curve,dt] = pathfind(nodeList, idList, Aint, Amid, obsList)
+function [curve,dt,spld,step] = pathfind(nodeList, idList, Aint, Amid, obsList)
     % nodeList: lista di nodi che compongono il path
     % Aint: matrice n x n x 2 di componenti [x,y]
     % costruisco sequenza di punti in cui far passare il path
@@ -46,11 +46,12 @@ function [curve,dt] = pathfind(nodeList, idList, Aint, Amid, obsList)
     lengthCurve = arclength(nPoints(:,2),nPoints(:,1),'makima');
 
     density = lengthCurve/size(nPoints,1);
-    [q,dt]=interparc(floor(k*density),nPoints(:,2)',nPoints(:,1)','makima');
+     pt = linspace(0,1,floor(k*density));
+% pt=1000;
+    [q,dt,foft,step,spld]=interparc(pt,nPoints(:,2)',nPoints(:,1)','makima');
 
     curve=q;
-
-    %% Controllo errore sulle distanze tra un punto e il successivo
+        %% Controllo errore sulle distanze tra un punto e il successivo
 %         q=curvspace(q,size(q,1));
 % q;
 %     dist = norm(q(1,:)-q(2,:));

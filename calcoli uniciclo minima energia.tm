@@ -682,8 +682,36 @@
       >><around*|[|k<rsub|8>=P<rsub|i>|]>>>
     </unfolded-io>
 
+    <\unfolded-io>
+      <with|color|red|(<with|math-font-family|rm|%i>1) >
+    <|unfolded-io>
+      depends(q,t)
+    <|unfolded-io>
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o1>)
+      >><around*|[|q<around*|(|t|)>|]>>>
+    </unfolded-io>
+
+    <\unfolded-io>
+      <with|color|red|(<with|math-font-family|rm|%i>2) >
+    <|unfolded-io>
+      x:a*sin(q)
+    <|unfolded-io>
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o2>)
+      >>a*sin <around*|(|q|)>>>
+    </unfolded-io>
+
+    <\unfolded-io>
+      <with|color|red|(<with|math-font-family|rm|%i>3) >
+    <|unfolded-io>
+      diff(x)
+    <|unfolded-io>
+      <math|<with|math-display|true|<text|<with|font-family|tt|color|red|(<with|math-font-family|rm|%o3>)
+      >>a*cos <around*|(|q|)>*<around*|(|<frac|d|d*t>*q|)>*d*t+sin
+      <around*|(|q|)>*d*a>>
+    </unfolded-io>
+
     <\input>
-      <with|color|red|(<with|math-font-family|rm|%i>79) >
+      <with|color|red|(<with|math-font-family|rm|%i>4) >
     <|input>
       \;
     </input>

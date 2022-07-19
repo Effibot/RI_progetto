@@ -43,31 +43,9 @@ for i = 1:5
     endId = idList(randi(size(idList,2)));
     P = shortestpath(G, startId, endId);
     idList(ismember(idList,startId)) = [];
-    [points,dudt] = pathfind(nodeList, P, Aint, Amid, rbclist);
-    q=curvspace(points,size(points,1));
-%Derivatives
-dxdt = diff(q(:,1),[],1);
-dydt= diff(q(:,2),[],1);
-% quiver(q(2:end,1),q(2:end,2),dxdt,dydt);
-%Distance between points
-dist = norm(q(1,:)-q(2,:));
-dnom=dist;
-for ii = 2:size(q,1)-1
-dist = [dist;norm(q(ii,:)-q(ii+1,:))];
-end
-% Mod V
-a=[dxdt,dydt];
-modV=norm(a(1,:));
-modVn=modV;
-for ii = 2:size(a,1)-1
-modV = [modV;norm(a(ii,:))];
-end
-%     figure
-%     hold on 
-%     plot(points(:,1),points(:,2),'LineStyle','-','LineWidth',5);
-s= plot(q(:,1),q(:,2),'*');
-   ds= quiver(points(:,1),points(:,2),dudt(:,1),dudt(:,2));
+    [points,dudt,foft,step] = pathfind(nodeList, P, Aint, Amid, rbclist);
 
+    s= plot(points(:,1),points(:,2),'LineWidth',3);
     for j = 1:fix(size(points,1)/100):size(points,1)
         currPoint = points(j,:);
         [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
@@ -95,7 +73,6 @@ s= plot(q(:,1),q(:,2),'*');
         delete(ll);
     end
     delete(s);
-    delete(ds);
 end
 %% plots
 % figure(5)
