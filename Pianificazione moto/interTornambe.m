@@ -6,12 +6,6 @@ load("pp.mat")
 %%
 nPoints = nPoints';
 newPoints = [];
-for i = 1: size(nPoints,2)-1
-    curr= nPoints(:,i);
-    succ = nPoints(:,i+1);
-    mid = [(curr(1,1)+succ(1,1))/2;(curr(2,1)+succ(2,1))/2];
-    newPoints =unique([newPoints,curr,mid,succ]','rows','stable')';
-end
 p = nPoints(1,:);
 p1=nPoints(2,:);
 % tf1=5;
@@ -27,45 +21,66 @@ ti = 0;
 tf2 = length(p)-4;
 delta = 0.01;
 time=ti:delta:tf2;
+% time = linspace(0,7,7000);
 px=[];
 vx = [];
 py=[];
 vy=[];
 k = 1;
-deltap = 1000;
-for j = 1:length(p)-1
-    p_i = p(j);
-    pf2 = p(j+1);
-    p_i1= p1(j);
-    pf21=p1(j+1);
-%     pddc = sign(pf2-p_i)*(4*(abs(pf2-p_i)))/tf^2;
-%     tc = (ti)/2+(1/2)*((tf2^2-4*(pf2-p_i))/(pddc));
-%     pc = p_i+0.5*pddc*tc^2;
-    vin = 0;
-    vf = 0;
-    for i = 1: size(time,2)
-        currtime = time(i);
+for j = 2:length(p)-1
+    p_i = p(j-1);
+    pf2 = p(j);
+    p_i1= p1(j-1);
+    pf21=p1(j);
+    vi = diff(p(j-1:j))*delta;
+    vf = diff(p(j:j+1))*delta;
+    vi1 = diff(p1(j-1:j))*delta;
+    vf1 = diff(p1(j:j+1))*delta;
+    if j == 1
+        vi =0;
+        vi1=0;
+    elseif j==length(p)-1
+        vf = 0;
+        vf1 = 0;
+    end
 
-        [a,b] = CartesianPlanner(p_i, pf2,ti, tf2,currtime, vin);
-%         vin = b;
-%         [c,d] = CartesianPlanner(p_i1, pf21,ti, tf2, currtime);
+    for i = 1: size(time,2)-1
+        currtime = time(i);
+        [a,b] = CartesianPlanner(p_i, pf2,ti, tf2,currtime,vi,vf);
+        [c,d] = CartesianPlanner(p_i1, pf21,ti, tf2, currtime,vi1,vf1);
         px = [px,a];
         vx = [vx,b];
-%         py = [py,c];
-%         vy = [vy,d];
+        py = [py,c];
+        vy = [vy,d];
     end
+    %     plot(px)
+    %     pause();
 end
+
+subplot(2,3,1)
+plot(px)
+subplot(2,3,2)
+plot(py)
+subplot(2,3,3)
+plot(px,py)
+subplot(2,3,4)
+plot(vx)
+subplot(2,3,5)
+plot(vy)
+
+
+
 %%
 xp =px;
-% yp = py;
+yp = py;
 vxp=vx;
-% vyp=vy;
+vyp=vy;
 x0 = xp(1);
-% y0 = yp(1);
+y0 = yp(1);
 v0x = vxp(1);
-% v0y = vyp(1);
+v0y = vyp(1);
 %%
-function [pd, pdot] = CartesianPlanner(p_i,  pf2, ti, tf1,t,vin)
+function [pd, pdot] = CartesianPlanner(p_i,  pf2, ti, tf1,t,vin,vf1)
 
 s = length(p_i);
 
@@ -74,26 +89,26 @@ if t<ti
     pdot=zeros(s,1);
 
 elseif t<=tf1
-    
-    A=[ti^5 ti^4 ti^3 ti^2 ti 1;
-        tf1^5 tf1^4 tf1^3 tf1^2 tf1 1;
-        5*ti^4 4*ti^3 3*ti^2 2*ti 1 0;
-        5*tf1^4 4*tf1^3 3*tf1^2 2*tf1 1 0;
-        20*ti^3 12*ti^2 6*ti 2 0 0;
-        20*tf1^3 12*tf1^2 6*tf1 2 0 0];
-    b1=[0;norm(p_i-pf2);0;0;0;0];
-    A = [ti^3 ti^2 ti 1;
-        tf1^3 tf1^2 tf1 1;
-        3*ti^2 2*ti 1 0;
-        3*tf1^2 2*tf1 1 0];
-    b1 = [0;norm(p_i-pf2);vin;0];
-    x=inv(A)*b1;
 
+%     A=[ti^5 ti^4 ti^3 ti^2 ti 1;
+%         tf1^5 tf1^4 tf1^3 tf1^2 tf1 1;
+%         5*ti^4 4*ti^3 3*ti^2 2*ti 1 0;
+%         5*tf1^4 4*tf1^3 3*tf1^2 2*tf1 1 0;
+%         20*ti^3 12*ti^2 6*ti 2 0 0;
+%         20*tf1^3 12*tf1^2 6*tf1 2 0 0];
+%     b1=[0;norm(p_i-pf2);vin;vf1;0;0];
+            A = [ti^3 ti^2 ti 1;
+                tf1^3 tf1^2 tf1 1;
+                3*ti^2 2*ti 1 0;
+                3*tf1^2 2*tf1 1 0];
+            b1 = [0;norm(pf2-p_i);vin;vin+vf1];
+    x=inv(A)*b1;
+    %
 %     s=x(1)*t^5+x(2)*t^4+x(3)*t^3+x(4)*t^2+x(5)*t+x(6);
 %     sdot=5*x(1)*t^4+4*x(2)*t^3+3*x(3)*t^2+2*x(4)*t+x(5);
-
-    s= x(1)*t^3+x(2)*t^2+x(3)*t+x(4);
-    sdot= 3*x(1)*t+2*x(2)*t+x(3);
+    %
+            s= x(1)*t^3+x(2)*t^2+x(3)*t+x(4);
+            sdot= 3*x(1)*t^2+2*x(2)*t+x(3);
 
     if norm(p_i-pf2)~=0
         pd=p_i+(s/norm(p_i-pf2))*(pf2-p_i);
@@ -135,4 +150,4 @@ end
 %     ptp = [ptp,qt(X(i,1),X(i,2),X(i,3),X(i,4),interv(l))];
 %     vtp =[vtp, vt(X(i,1),X(i,2),X(i,3),interv(l))];
 %     end
-% end
+% en

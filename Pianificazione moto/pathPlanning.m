@@ -43,8 +43,7 @@ for i = 1:5
     endId = idList(randi(size(idList,2)));
     P = shortestpath(G, startId, endId);
     idList(ismember(idList,startId)) = [];
-    [points,dudt,foft,step] = pathfind(nodeList, P, Aint, Amid, rbclist);
-
+    points = pathfind(nodeList, P, Aint, Amid, rbclist);
     s= plot(points(:,1),points(:,2),'LineWidth',3);
     for j = 1:fix(size(points,1)/100):size(points,1)
         currPoint = points(j,:);
