@@ -42,11 +42,12 @@ for i = 1:size(nPoints,1)-2
     end
 end
 dim = length(nPoints);
+nPoints = interparc(dim,nPoints(:,1),nPoints(:,2),'linear');
 tstart = 0;
 tend = dim-1;
 stepsize = 0.001;
 time = tstart:stepsize:floor(tend/2);
-time = linspace(tstart,floor(tend/2),(dim)*1000);
+time = linspace(tstart,floor(tend/2),(dim-1)*500);
 x = nPoints(:,1);
 y= nPoints(:,2);
 [qx,qxd,qxdd]=smoothSpline(dim,x,time,tstart);

@@ -2,7 +2,7 @@ clc
 clear all
 clf
 %%
-r=rateControl(100);
+% r=rateControl(100);
 syms mu x y z alpha gamma beta t...
     x_dot y_dot z_dot
 
@@ -10,7 +10,7 @@ syms mu x y z alpha gamma beta t...
 q=sym('a',[6,1]);
 qd=sym('a',[6,1]);
 qdd=sym('a',[6,1]);
-L=[40;62;0;60;0;12];
+L=[400;620;0;600;0;120];
 
 D=sym('a',[6,1]);
 R=sym('a',[3,3]);
@@ -39,8 +39,8 @@ dof=6;
 col=4;
 dhparams=sym('b',[dof,col]);
 dhparams(1,1:end)=[q(1,1),L(1,1),-pi/2,0];
-dhparams(2,1:end)=[q(2,1),0,0,L(2,1)];
-dhparams(3,1:end)= [q(3,1),0,-pi/2,L(3,1)];
+dhparams(2,1:end)=[q(2,1)-pi/2,0,0,L(2,1)];
+dhparams(3,1:end)= [q(3,1)-pi/2,0,-pi/2,L(3,1)];
 dhparams(4,1:end)= [q(4,1),L(4,1),pi/2,0];
 dhparams(5,1:end)= [q(5,1),0,-pi/2,0];
 dhparams(6,1:end)=[q(6,1),L(6,1),0,0];
@@ -92,13 +92,13 @@ Rq =drr(1:3,1:3);
 % R06 = matlabFunction(Rq);
 %%
 xdes = 40;
-ydes = 50;
-zdes = 100;
+ydes = 20;
+zdes = 50;
 roll = 0;
 pitch = 0;
 yaw = 0;
-P=[xdes;ydes;zdes;roll;pitch;yaw];
-q0=[0.01;-pi/2;-pi/2;0.01;0.01;0.01];
+P=[xdes(end);ydes(end);zdes(end);roll;pitch;yaw];
+q0=[0;0;pi/2;0;0;0];
 %%
 de = DH(dhparams);
 dep = de(1:3,4);
@@ -130,8 +130,42 @@ d5=matlabFunction(d05);
 T06 = DH(dhparams(1:6,:));
 d06 = T06(1:3,4);
 d6=matlabFunction(d06);
-rho = norm([xdes;ydes;zdes]);
+rho = norm([xdes(end);ydes(end)]);
 theta=0;
+%% Joint Space
+st =20;
+qq1= deg2rad(-165:st:165);
+qq2 = deg2rad(-110:st:110);
+qq3 = deg2rad(-70:st:110);
+qq4 = deg2rad(linspace(-160,160,st));
+qq5 = deg2rad(linspace(-120,120,st));
+qq6 = deg2rad(linspace(0,360,st));
+point=zeros(3,1);
+SURF = zeros(size(qq1,2),size(qq2,2),3);
+N1=size(qq1,2);
+N2 = size(qq2,2);
+q0(1,1)= qq1(1);
+q0(2,1)=qq2(1);
+q0(3,1)=qq3(1);
+N3 = size(qq3,2);
+for k=1:N3
+    for i=1:N1
+        for j=1:N2
+            point=d6(qq1(i),qq2(j),qq3(k),0,0);
+            SURF(i,j,:)=point';
+        end
+    end
+    surf(SURF(:,:,1),SURF(:,:,2),SURF(:,:,3));
+    figure(1)
+    hold on
+    axis([-2000 2000 -2000 2000 0 Inf])
+    out=link2draw(q0,d1,d2,d3,d4,d5,d6);
+    pause()
+    hold on
+end
+
+
+
 %%
 figure(1)
 hold on
@@ -144,25 +178,30 @@ while 1
     Jval =J(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
     Jinv = Jval*(Jval');
     errnorm =norm(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)))
-    if errnorm>15
-                disp('Newton');
+    if errnorm <0.001
+        break
+    end
+    if errnorm>8
+        disp('Newton');
         %         qdot = -JJt(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1))\...
         %             Jt(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1))*...
         %         (errf(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
         qdot = -pinv(Jval)*E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
+
         q1 = q0+0.005*qdot;
 
         %Gradient
     else
         disp('Gradiente');
         qdot = -Jval'*(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
-        q1 = q0+5e-5*qdot;
+        q1 = q0+7e-5*qdot;
     end
-    q0=q1;
 
+    q0=jointlimit(q1);
+    %     q0=q1
     hold off
 
-    h=plot3(xdes,ydes,zdes,'*r');
+    h=plot3(xdes,ydes,zdes(1:length(xdes)),'*r');
     view([-41 13]);
     hold on
     grid on
@@ -171,14 +210,19 @@ while 1
     Pi=double(hq(q1(1,1),q1(2,1),q1(3,1),q1(4,1),q1(5,1),q1(6,1)));
     plot3(Pi(1,1),Pi(2,1),Pi(3,1),'-ob');
     pause(0.01);
-    if errnorm<1.5 && i==0
-         theta = wrapToPi(theta+20);
-         xdes=rho*cos(theta);
-         ydes=rho*sin(theta);
-         zdes=zdes;
-         i=1;
+    if errnorm <1
+        i=0;
     else
         i=1;
+    end
+    if i == 0
+        theta = (theta+0.2);
+        xdes=[xdes;rho*cos(theta)];
+        ydes=[ydes;rho*sin(theta)];
+        zdes=[zdes;zdes];
+        P=[xdes(end);ydes(end);zdes(end);roll;pitch;yaw];
+        err = [dep;pitchp;rollp;yawp]-P;
+        E = matlabFunction(err);
     end
 end
 
@@ -283,12 +327,12 @@ R6= DH(d(1:6,:));
 Pe = R6(1:3,4);
 ez=[0;0;1];
 %     R0(1:3,1:3)*ez,
-I1 =R1(1:3,1:3)*ez;
-I2=R2(1:3,1:3)*ez;
-I3=R3(1:3,1:3)*ez;
-I4=R4(1:3,1:3)*ez;
-I5=R5(1:3,1:3)*ez;
-I6=R6(1:3,1:3)*ez;
+I1 =R1(1:3,1:3).*ez;
+I2=R2(1:3,1:3).*ez;
+I3=R3(1:3,1:3).*ez;
+I4=R4(1:3,1:3).*ez;
+I5=R5(1:3,1:3).*ez;
+I6=R6(1:3,1:3).*ez;
 J_R = [I1,I2,I3,I4,I5,I6];
 
 %d6=R6(1:3,1:3)*zeros(3,1);
@@ -305,3 +349,14 @@ J_P = [cross(I1,d1),cross(I2,d2),cross(I3,d3),cross(I4,d4),cross(I5,d5),cross(I6
 
 J=[J_P;J_R];
 end
+function q = jointlimit(q1)
+q1(1,1)=min(max(-165,rad2deg(q1(1,1))),165);
+q1(2,1)=min(max(-110,rad2deg(q1(2,1))),110);
+q1(3,1)=min(max(-70,rad2deg(q1(3,1))),110);
+q1(4,1)=min(max(-160,rad2deg(q1(4,1))),160);
+q1(5,1)=min(max(-120,rad2deg(q1(5,1))),120);
+% q1(6,1)=max(min(-0,rad2deg(q1(6,1))),360);
+q=deg2rad(q1);
+
+end
+
